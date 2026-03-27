@@ -1,11 +1,16 @@
 # Piano: Sito Web Travel Photography
 
 ## Contesto
-Alessandro vuole un sito personale per raccogliere le fotografie dei suoi viaggi. Il sito deve essere moderno, accattivante, con colori vividi. Ogni viaggio ha un colore identificativo. Stack: HTML + CSS + JS vanilla ES6+. Nessun framework, nessun build tool — sito statico puro, pronto per essere hostato ovunque.
+Alessandro vuole un sito personale per raccogliere le fotografie dei suoi viaggi. Il sito deve essere moderno, accattivante, con colori vividi. Ogni viaggio ha un colore identificativo. Stack: HTML + CSS + JS vanilla ES6+. Nessun framework UI, nessun bundler — sito statico puro, pronto per essere hostato ovunque.
 
 **Preferenze utente:**
 - Doppio tema dark/light con toggle switch, preferenza salvata in localStorage
 - Navbar sticky che segue lo scroll della pagina (si riduce/cambia stile on scroll)
+- Layout basato su Flexbox (no CSS Grid)
+
+**Tooling:**
+- npm per gestire gli script di sviluppo (`npm start` per il dev server)
+- `lite-server` come dev server locale (supporta ES modules, live reload, zero config)
 
 ---
 
@@ -13,6 +18,8 @@ Alessandro vuole un sito personale per raccogliere le fotografie dei suoi viaggi
 
 ```
 Surprise/
+├── package.json            # Script npm e dipendenze dev
+├── .gitignore              # node_modules/, .DS_Store
 ├── index.html              # Pagina principale (SPA single-page)
 ├── css/
 │   └── style.css           # Stili (variabili CSS per dark/light, layout, animazioni)
@@ -21,12 +28,17 @@ Surprise/
 │   ├── data.js             # Dati dei viaggi (export array di oggetti)
 │   ├── gallery.js          # Rendering card + galleria foto + lightbox
 │   ├── menu.js             # Navbar sticky + dropdown viaggi + hamburger mobile
-│   └── theme.js            # Toggle dark/light, persistenza in localStorage
+│   ├── theme.js            # Toggle dark/light, persistenza in localStorage
+│   ├── filters.js          # Filtraggio per tag e ordinamento per data
+│   ├── stats.js            # Contatori animati nella hero
+│   ├── auth.js             # Login admin: validazione credenziali, sessione
+│   └── admin.js            # Pannello admin: dashboard, trip editor, tag manager
 ├── assets/
 │   └── photos/             # Cartella foto, una sotto-cartella per viaggio
 │       ├── giappone/
 │       ├── islanda/
 │       └── ...
+├── PLAN.md
 └── README.md
 ```
 
@@ -43,6 +55,8 @@ export const trips = [
     color: "#E63946",
     cover: "assets/photos/giappone/cover.jpg",
     description: "Tokyo, Kyoto e il Monte Fuji",
+    tags: ["asia", "cultura", "citta"],
+    published: true,              // false = visibile solo nell'admin (draft)
     photos: [
       { src: "assets/photos/giappone/01.jpg", caption: "Tempio di Fushimi Inari" },
       { src: "assets/photos/giappone/02.jpg", caption: "Shibuya crossing" },
@@ -52,7 +66,7 @@ export const trips = [
 ];
 ```
 
-Per aggiungere un viaggio: aggiungere un oggetto all'array + mettere le foto nella cartella.
+> **Nota:** Il sito pubblico mostra solo i viaggi con `published: true`. L'admin li mostra tutti.
 
 ---
 
@@ -115,6 +129,41 @@ Per aggiungere un viaggio: aggiungere un oggetto all'array + mettere le foto nel
 - Click: switcha `data-theme` su `<html>`, salva in localStorage
 - Al caricamento: legge localStorage oppure rispetta `prefers-color-scheme`
 
+### 6. Filtri e ordinamento
+- Barra filtri sopra le card nella landing: bottoni tag (es. "asia", "natura", "citta") + ordinamento per data (recenti/meno recenti)
+- Click su un tag: filtra le card mostrando solo i viaggi con quel tag
+- Filtro attivo evidenziato visivamente
+- Animazione smooth quando le card appaiono/scompaiono
+
+### 7. Contatore statistiche (Hero)
+- Nella sezione hero, sotto il titolo: "X viaggi, Y paesi, Z foto"
+- Contatori con animazione count-up al caricamento della pagina
+- I valori sono calcolati dinamicamente dai dati in `data.js`
+
+### 8. Sezione About
+- Raggiungibile tramite link nella navbar e/o nel footer
+- Breve bio, foto profilo, contatti/social
+- Gestita come vista separata via hash routing (`#about`)
+
+### 9. Pannello Admin (`#admin`)
+- Rotta `#admin` — se non autenticato, mostra il form di login
+- **Login**: form con username e password, credenziali verificate tramite hash SHA-256 confrontato con hash salvato come costante (credenziali iniziali: username `Admin`, password `Admin`)
+- **Sessione**: al login riuscito, salva un token di sessione in `sessionStorage` (scade alla chiusura del tab)
+- **Dashboard**: panoramica rapida — n. viaggi (pubblicati/draft), n. foto totali, n. tag, foto per viaggio
+- **Trip editor**: form visuale per creare/modificare un viaggio (nome, data, colore con color picker, descrizione, tags, published). Lista viaggi con badge "Draft"/"Pubblicato"
+- **Photo organizer**: per ogni viaggio, lista foto con drag & drop per riordinare, modifica caption inline, scelta cover, segnalazione immagini rotte (broken image checker)
+- **Tag manager**: lista tag con conteggio viaggi per tag, rinomina, elimina, merge tag duplicati
+- **Color palette overview**: griglia visiva di tutti i colori dei viaggi, segnala coppie troppo simili
+- **Esporta/Importa**: bottone "Esporta data.js" scarica il file aggiornato. Bottone "Importa JSON" carica dati da file
+- **Logout**: torna alla home pubblica, cancella sessione
+
+### 10. Accessibilita (a11y)
+- `aria-label` su tutti i controlli interattivi (toggle tema, hamburger, lightbox, filtri)
+- Focus trap nel lightbox (Tab cicla solo tra i controlli del lightbox)
+- `skip-to-content` link nascosto, visibile on focus
+- Ruoli ARIA: `role="dialog"` per lightbox, `aria-expanded` per dropdown
+- Focus visibile su tutti gli elementi interattivi (outline personalizzato)
+
 ---
 
 ## Moduli JavaScript
@@ -126,6 +175,10 @@ Per aggiungere un viaggio: aggiungere un oggetto all'array + mettere le foto nel
 | `theme.js` | Toggle dark/light, persistenza localStorage, rispetto `prefers-color-scheme` iniziale |
 | `menu.js` | Genera navbar con dropdown viaggi, gestisce hamburger mobile, comportamento sticky on scroll |
 | `gallery.js` | Renderizza trip cards (landing) e griglia foto (galleria), gestisce lightbox completo |
+| `filters.js` | Filtraggio per tag e ordinamento per data sulla landing page |
+| `stats.js` | Calcola e renderizza i contatori animati nella hero (viaggi, paesi, foto) |
+| `auth.js` | Login admin: validazione credenziali via hash SHA-256, gestione sessione in sessionStorage |
+| `admin.js` | Pannello admin: dashboard, trip editor, photo organizer, tag manager, esporta/importa |
 
 ---
 
@@ -135,88 +188,213 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 1 — Scaffolding progetto e dati
-**Obiettivo:** Creare la struttura di cartelle/file e i dati di esempio.
-**File coinvolti:** `index.html`, `css/style.css`, `js/data.js`, `js/app.js`
-**Cosa si ottiene:** Un `index.html` vuoto ma ben strutturato che carica i moduli JS. I dati dei viaggi sono pronti. Lo stile ha il reset CSS e le variabili base.
+### Step 1 — Setup npm e scaffolding progetto
+**Obiettivo:** Inizializzare il progetto npm, creare la struttura di cartelle e il dev server.
+**File coinvolti:** `package.json`, `.gitignore`, `index.html`, cartelle `css/`, `js/`, `assets/photos/`
+- `npm init` con le info base del progetto
+- Installare `lite-server` come devDependency
+- Aggiungere script `"start": "lite-server"` in package.json
+- Creare `.gitignore` (`node_modules/`, `.DS_Store`)
 - Creare le cartelle `css/`, `js/`, `assets/photos/`
-- `index.html`: struttura semantica (header > nav, main, footer), caricamento moduli ES6
-- `css/style.css`: reset, variabili CSS (colori, spacing, tipografia), layout base
-- `js/data.js`: 2-3 viaggi di esempio con foto placeholder
-- `js/app.js`: entry point minimale che importa i dati e logga in console
+- `index.html`: struttura semantica minimale (header > nav, main, footer)
+
+**Verifica:** `npm start` apre il browser con la pagina vuota, live reload funziona.
 
 ---
 
-### Step 2 — Theming dark/light
+### Step 2 — Dati di esempio e stili base
+**Obiettivo:** Preparare i dati dei viaggi e il CSS fondamentale.
+**File coinvolti:** `js/data.js`, `js/app.js`, `css/style.css`
+- `js/data.js`: 2-3 viaggi di esempio con foto placeholder da `picsum.photos` (nessuna immagine locale necessaria per ora)
+- `js/app.js`: entry point che importa i dati e renderizza un test visivo nel `<main>`
+- `css/style.css`: reset CSS, variabili base (colori, spacing, tipografia), layout base body/main
+
+**Verifica:** La pagina mostra i nomi dei viaggi come testo semplice. I dati sono accessibili in console.
+
+---
+
+### Step 3 — Theming dark/light
 **Obiettivo:** Implementare il sistema di temi con toggle.
 **File coinvolti:** `js/theme.js`, `css/style.css`, `index.html`
-**Cosa si ottiene:** La pagina ha due temi (dark/light), un toggle funzionante nella navbar, e la preferenza persiste al reload.
 - `css/style.css`: due set di variabili CSS sotto `[data-theme="dark"]` e `[data-theme="light"]`
 - `js/theme.js`: logica toggle, persistenza localStorage, rispetto `prefers-color-scheme`
 - `index.html`: aggiungere il bottone toggle nella nav
 - `js/app.js`: inizializzare il tema al caricamento
 
+**Verifica:** Il toggle switcha i colori. Ricaricare la pagina mantiene la scelta. Se non c'e' preferenza salvata, rispetta il tema del sistema operativo.
+
 ---
 
-### Step 3 — Navbar sticky + menu viaggi
+### Step 4 — Navbar sticky + menu viaggi
 **Obiettivo:** Barra di navigazione funzionante con dropdown viaggi.
-**File coinvolti:** `js/menu.js`, `css/style.css`, `index.html`
-**Cosa si ottiene:** Navbar fissa in alto che si compatta on scroll, con dropdown che elenca i viaggi (pallino colorato per ognuno). Hamburger menu su mobile.
+**File coinvolti:** `js/menu.js`, `css/style.css`
 - `js/menu.js`: generazione dinamica del dropdown dai dati, hamburger toggle, scroll listener per compattamento
 - `css/style.css`: stili navbar fixed, transizione compattamento, dropdown, hamburger, responsive
 
+**Verifica:** La navbar resta fissa in alto. Scrollando si compatta. Il dropdown mostra i viaggi con pallini colorati. Su viewport < 768px appare l'hamburger.
+
 ---
 
-### Step 4 — Landing page con trip cards
+### Step 5 — Landing page con trip cards
 **Obiettivo:** La home page mostra le card dei viaggi.
 **File coinvolti:** `js/gallery.js`, `css/style.css`
-**Cosa si ottiene:** Griglia flex di card con cover, nome, data. Ogni card ha il bordo/accento nel colore del viaggio. Hover animato.
 - `js/gallery.js`: funzione per renderizzare le trip card nel `<main>`
 - `css/style.css`: layout flex-wrap per le card, hover effects (scale, glow colorato), overlay gradient
 - `js/app.js`: chiamare il rendering delle card all'avvio
 
+**Verifica:** Le card appaiono in griglia, ogni card ha il suo colore accento sul bordo. L'hover mostra zoom e glow. Le foto placeholder da picsum si caricano correttamente.
+
 ---
 
-### Step 5 — Routing e vista galleria viaggio
+### Step 6 — Routing e vista galleria viaggio
 **Obiettivo:** Click su una card o voce menu porta alla galleria foto del viaggio.
 **File coinvolti:** `js/app.js`, `js/gallery.js`, `css/style.css`
-**Cosa si ottiene:** Navigazione hash-based (`#trip/giappone`). La galleria mostra header con colore accento e griglia foto. Bottone "Torna ai viaggi". Deep linking funzionante.
 - `js/app.js`: listener `hashchange`, logica routing (landing vs galleria)
 - `js/gallery.js`: funzione rendering galleria (header colorato + griglia foto flex)
 - `css/style.css`: stili galleria, header con accento, griglia foto responsive
 - Collegare click card e click menu al cambio hash
 
+**Verifica:** Click card -> URL cambia in `#trip/giappone` -> appare la galleria con header colorato. Bottone "Torna" riporta alla landing. Ricaricare su `#trip/giappone` apre direttamente la galleria (deep linking).
+
 ---
 
-### Step 6 — Lightbox
+### Step 7 — Lightbox
 **Obiettivo:** Visualizzazione foto fullscreen con navigazione.
 **File coinvolti:** `js/gallery.js`, `css/style.css`
-**Cosa si ottiene:** Click su foto apre overlay fullscreen. Navigazione prev/next con click e tastiera. Counter, caption, chiusura con X/Escape/click esterno.
 - `js/gallery.js`: logica lightbox (apertura, chiusura, navigazione, keyboard events)
 - `css/style.css`: overlay, centratura foto, animazioni fade/scale, frecce, counter
 
+**Verifica:** Click foto -> overlay fullscreen. Frecce e tastiera per prev/next. Counter "3 / 12" visibile. Chiusura con X, Escape, click fuori dall'immagine.
+
 ---
 
-### Step 7 — Polish e animazioni
+### Step 8 — Filtri e ordinamento viaggi
+**Obiettivo:** Permettere all'utente di filtrare i viaggi per tag e ordinarli per data.
+**File coinvolti:** `js/filters.js`, `js/gallery.js`, `css/style.css`
+- `js/filters.js`: logica filtro per tag, ordinamento per data (recenti/meno recenti), rendering barra filtri
+- `js/gallery.js`: integrare i filtri nel rendering delle card (mostra/nascondi con animazione)
+- `css/style.css`: stili barra filtri, bottoni tag attivi/inattivi, transizione card filtrate
+
+**Verifica:** I bottoni tag filtrano le card. L'ordinamento inverte l'ordine. Filtro attivo ha stile evidenziato. Le card appaiono/scompaiono con animazione smooth.
+
+---
+
+### Step 9 — Contatore statistiche nella hero
+**Obiettivo:** Mostrare statistiche animate nella sezione hero.
+**File coinvolti:** `js/stats.js`, `js/app.js`, `css/style.css`
+- `js/stats.js`: calcolo dinamico (n. viaggi, n. paesi/destinazioni, n. foto totali) + animazione count-up
+- `js/app.js`: inizializzare i contatori al caricamento
+- `css/style.css`: stili contatori nella hero
+
+**Verifica:** La hero mostra "X viaggi, Y paesi, Z foto". I numeri si animano da 0 al valore finale al caricamento della pagina.
+
+---
+
+### Step 10 — Sezione About
+**Obiettivo:** Aggiungere una pagina "Chi sono" raggiungibile dalla navbar.
+**File coinvolti:** `js/app.js`, `js/menu.js`, `css/style.css`
+- `js/app.js`: aggiungere rotta `#about` al routing
+- `js/menu.js`: aggiungere link "About" nella navbar
+- Contenuto: bio, foto profilo (placeholder), link social
+- `css/style.css`: layout sezione about, responsive
+
+**Verifica:** Click "About" nella navbar -> si apre la sezione. Deep linking `#about` funziona. Bottone per tornare alla home.
+
+---
+
+### Step 11 — Admin: login e routing
+**Obiettivo:** Implementare l'autenticazione e la rotta `#admin`.
+**File coinvolti:** `js/auth.js`, `js/app.js`, `css/style.css`
+- `js/auth.js`: hash SHA-256 delle credenziali (`Admin`/`Admin`), funzione di verifica, gestione sessione in `sessionStorage`
+- `js/app.js`: aggiungere rotta `#admin` — se non autenticato mostra il login, se autenticato mostra il pannello
+- `css/style.css`: stili form login (centrato, card con ombra, input stilizzati, errore inline)
+- Il form login mostra un messaggio di errore se le credenziali sono sbagliate
+
+**Verifica:** Navigare a `#admin` -> appare il form login. Credenziali errate -> messaggio errore. Username `Admin` + password `Admin` -> accesso al pannello. Chiudere il tab e riaprire -> serve nuovo login.
+
+---
+
+### Step 12 — Admin: dashboard e trip editor
+**Obiettivo:** Pannello admin con dashboard e gestione viaggi.
+**File coinvolti:** `js/admin.js`, `css/style.css`
+- Dashboard: contatori (viaggi pubblicati, draft, foto totali, tag), lista viaggi con badge stato
+- Trip editor: form per creare/modificare un viaggio (nome, data, color picker, descrizione, tags, toggle published)
+- Modifica inline dalla lista viaggi
+- Bottone logout nella navbar admin
+
+**Verifica:** La dashboard mostra le statistiche corrette. Creare un viaggio -> appare nella lista. Modificare un campo -> il dato si aggiorna. Toggle published -> il badge cambia. I draft non appaiono nel sito pubblico.
+
+---
+
+### Step 13 — Admin: photo organizer e tag manager
+**Obiettivo:** Gestione foto e tag dall'admin.
+**File coinvolti:** `js/admin.js`, `css/style.css`
+- Photo organizer: per ogni viaggio, griglia foto con drag & drop per riordinare, modifica caption inline, scelta cover, broken image checker (evidenzia foto con URL rotto)
+- Tag manager: lista tag con conteggio viaggi, rinomina, elimina, segnalazione tag non usati
+- Color palette overview: griglia visiva dei colori di tutti i viaggi, segnala coppie con differenza < 30 in distanza colore
+
+**Verifica:** Drag & drop riordina le foto. Caption si modifica inline. Broken checker segnala immagini inesistenti. Tag manager mostra conteggi corretti, rinomina aggiorna tutti i viaggi.
+
+---
+
+### Step 14 — Admin: esporta/importa dati
+**Obiettivo:** Permettere l'esportazione e l'importazione dei dati.
+**File coinvolti:** `js/admin.js`
+- Bottone "Esporta data.js": genera e scarica il file `data.js` con la sintassi ES module corretta, pronto da sostituire nel progetto
+- Bottone "Importa JSON": carica un file JSON, valida la struttura, e aggiorna i dati nel pannello
+- Feedback visivo: conferma esportazione, errori di validazione sull'import
+
+**Verifica:** Esportare -> il file scaricato e' un `data.js` valido con `export const trips = [...]`. Importare il file esportato -> i dati si caricano correttamente nell'admin.
+
+---
+
+### Step 15 — Accessibilita (a11y)
+**Obiettivo:** Rendere il sito accessibile e navigabile da tastiera.
+**File coinvolti:** tutti
+- `aria-label` su tutti i controlli interattivi (toggle tema, hamburger, lightbox, filtri)
+- Focus trap nel lightbox (Tab cicla solo tra i controlli del lightbox)
+- Link `skip-to-content` nascosto, visibile on focus
+- Ruoli ARIA: `role="dialog"` per lightbox, `aria-expanded` per dropdown
+- Outline di focus personalizzato e visibile su tutti gli elementi interattivi
+
+**Verifica:** Navigare l'intero sito usando solo la tastiera (Tab, Enter, Escape, frecce). Screen reader legge correttamente ruoli e label. Il lightbox intrappola il focus.
+
+---
+
+### Step 16 — Polish e animazioni
 **Obiettivo:** Rifinitura finale dell'esperienza utente.
 **File coinvolti:** tutti
-**Cosa si ottiene:** Sito completo, fluido, responsive, con animazioni di entrata e lazy loading.
 - Lazy loading immagini (`loading="lazy"`)
 - Animazioni di entrata card (fade-in/slide-up con IntersectionObserver)
 - Responsive tuning finale (375px, 768px, 1440px)
 - Favicon e meta tag Open Graph
 - Pulizia codice e test finale
 
+**Verifica:** Tutte le verifiche degli step precedenti passano. Le animazioni sono fluide. Il sito e' usabile su mobile, tablet e desktop.
+
 ---
 
-## Verifica
+## Come aggiungere un nuovo viaggio
 
-1. Aprire `index.html` con Live Server di VS Code
-2. **Tema**: verificare toggle dark/light, che la preferenza persista al reload
-3. **Navbar**: verificare compattamento on scroll, dropdown viaggi con pallini colorati, hamburger su mobile
-4. **Landing**: card viaggi con colori corretti, hover effects
-5. **Navigazione**: click card -> galleria, dropdown menu -> galleria, bottone indietro
-6. **Galleria**: foto con colore accento del viaggio, griglia responsive
-7. **Lightbox**: apertura, navigazione prev/next (click + tastiera), chiusura (X, click fuori, Escape)
-8. **Deep linking**: ricaricare su `#trip/giappone` -> si apre direttamente la galleria
-9. **Responsive**: testare su 375px (mobile), 768px (tablet), 1440px (desktop)
+1. Aprire `js/data.js`
+2. Aggiungere un nuovo oggetto all'array `trips`:
+   ```js
+   {
+     id: "nome-viaggio",        // ID univoco, usato nell'URL (#trip/nome-viaggio)
+     name: "Nome Viaggio",      // Nome visualizzato
+     date: "2025-06",           // Data (YYYY-MM)
+     color: "#FF6B35",          // Colore accento (hex)
+     cover: "assets/photos/nome-viaggio/cover.jpg",
+     description: "Breve descrizione del viaggio",
+     tags: ["natura", "europa"],  // Tag per il filtraggio
+     published: true,              // false = draft, visibile solo nell'admin
+     photos: [
+       { src: "assets/photos/nome-viaggio/01.jpg", caption: "Didascalia foto" },
+       // ...altre foto
+     ]
+   }
+   ```
+3. Creare la cartella `assets/photos/nome-viaggio/` e inserire le foto
+4. Ricaricare il sito — il nuovo viaggio appare automaticamente nel menu e nella landing
+
+> **In alternativa:** usa il pannello admin (`#admin`) per creare il viaggio visualmente, poi esporta il file `data.js` aggiornato.
