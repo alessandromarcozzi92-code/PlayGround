@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Filter bar with tag buttons and date sort toggle on the landing page (Step 8).
+- `filters.js` module: tag filtering, date sorting, and filter bar rendering.
+- Card entrance animation with staggered fade-in on filter/sort change.
 - Fullscreen lightbox with prev/next navigation, keyboard controls (arrows, Escape), counter, caption, and focus trap (Step 7).
 - Hash-based routing: `#trip/<id>` opens the trip gallery view with deep linking support (Step 6).
 - Trip gallery view with colored header, back button, photo grid, and captions (Step 6).

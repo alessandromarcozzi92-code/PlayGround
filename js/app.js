@@ -2,15 +2,24 @@ import { trips } from './data.js';
 import { initTheme, toggleTheme } from './theme.js';
 import { initMenu, updateNavFromHash } from './menu.js';
 import { renderTripCards, renderTripGallery } from './gallery.js';
+import { renderFilterBar, getFilteredTrips, resetFilters } from './filters.js';
 
 /** @type {HTMLElement} */
 let mainContent;
 
 /**
- * Renders the landing page with hero section and trip cards.
+ * Re-renders just the trip cards grid using the current filter/sort state.
+ */
+const updateCards = () => {
+  renderTripCards(mainContent, getFilteredTrips());
+};
+
+/**
+ * Renders the landing page with hero section, filter bar, and trip cards.
  */
 function renderLanding() {
   mainContent.innerHTML = '';
+  resetFilters();
 
   const hero = document.createElement('section');
   hero.className = 'hero';
@@ -20,7 +29,8 @@ function renderLanding() {
   `;
 
   mainContent.appendChild(hero);
-  renderTripCards(mainContent);
+  renderFilterBar(mainContent, updateCards);
+  renderTripCards(mainContent, getFilteredTrips());
 }
 
 /**

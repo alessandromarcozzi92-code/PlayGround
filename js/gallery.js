@@ -1,22 +1,30 @@
-import { trips } from './data.js';
-
 const MONTH_LABELS = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
 // ── Trip Cards (landing) ────────────────────────────────────────
 
 /**
- * Renders published trip cards into the given container.
+ * Renders trip cards into the given container.
+ * If a grid already exists inside the container it is replaced.
  *
- * @param {HTMLElement} container - The parent element to append the grid to.
+ * @param {HTMLElement} container  - The parent element that holds the grid.
+ * @param {Object[]}    tripsList - Array of trip objects to render.
  */
-export const renderTripCards = (container) => {
-  const grid = document.createElement('section');
-  grid.className = 'trips-grid';
+export const renderTripCards = (container, tripsList) => {
+  let grid = container.querySelector('.trips-grid');
 
-  trips.filter(t => t.published).forEach(trip => {
+  if (!grid) {
+    grid = document.createElement('section');
+    grid.className = 'trips-grid';
+    container.appendChild(grid);
+  }
+
+  grid.innerHTML = '';
+
+  tripsList.forEach((trip, index) => {
     const card = document.createElement('article');
     card.className = 'trip-card';
     card.style.setProperty('--trip-color', trip.color);
+    card.style.setProperty('--card-index', index);
     card.innerHTML = `
       <a href="#trip/${trip.id}" class="trip-card__link">
         <div class="trip-card__image-wrapper">
@@ -36,8 +44,6 @@ export const renderTripCards = (container) => {
     `;
     grid.appendChild(card);
   });
-
-  container.appendChild(grid);
 };
 
 // ── Trip Gallery (single trip view) ─────────────────────────────

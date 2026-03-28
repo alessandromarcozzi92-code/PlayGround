@@ -268,7 +268,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 8 — Filtri e ordinamento viaggi
+### Step 8 — [DONE] Filtri e ordinamento viaggi
 **Obiettivo:** Permettere all'utente di filtrare i viaggi per tag e ordinarli per data.
 **File coinvolti:** `js/filters.js`, `js/gallery.js`, `css/style.css`
 - `js/filters.js`: logica filtro per tag, ordinamento per data (recenti/meno recenti), rendering barra filtri
