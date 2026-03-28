@@ -1,9 +1,16 @@
 import { trips } from './data.js';
 import { initTheme, toggleTheme } from './theme.js';
 import { initMenu, updateNavFromHash } from './menu.js';
+import { renderTripCards, renderTripGallery } from './gallery.js';
 
+/** @type {HTMLElement} */
+let mainContent;
+
+/**
+ * Renders the landing page with hero section and trip cards.
+ */
 function renderLanding() {
-  const main = document.getElementById('main-content');
+  mainContent.innerHTML = '';
 
   const hero = document.createElement('section');
   hero.className = 'hero';
@@ -12,44 +19,47 @@ function renderLanding() {
     <p class="hero__subtitle">Travel Photography</p>
   `;
 
-  const grid = document.createElement('section');
-  grid.className = 'trips-grid';
-
-  trips.filter(t => t.published).forEach(trip => {
-    const card = document.createElement('article');
-    card.className = 'trip-card';
-    card.style.setProperty('--trip-color', trip.color);
-    card.innerHTML = `
-      <div class="trip-card__image-wrapper">
-        <img src="${trip.cover}" alt="${trip.name}" class="trip-card__image">
-      </div>
-      <div class="trip-card__info">
-        <h2 class="trip-card__name">${trip.name}</h2>
-        <p class="trip-card__description">${trip.description}</p>
-        <time class="trip-card__date">${trip.date}</time>
-      </div>
-    `;
-    grid.appendChild(card);
-  });
-
-  main.innerHTML = '';
-  main.appendChild(hero);
-  main.appendChild(grid);
+  mainContent.appendChild(hero);
+  renderTripCards(mainContent);
 }
 
-function onHashChange() {
+/**
+ * Reads the current hash and renders the matching view.
+ * Supports: landing (default), trip gallery (#trip/<id>).
+ */
+function route() {
   const hash = window.location.hash;
   updateNavFromHash(hash);
-  // Routing will be expanded in future steps
+  window.scrollTo(0, 0);
+
+  const tripMatch = hash.match(/^#trip\/(.+)$/);
+
+  if (tripMatch) {
+    const trip = trips.find(t => t.id === tripMatch[1] && t.published);
+    if (trip) {
+      renderTripGallery(mainContent, trip);
+      return;
+    }
+  }
+
   renderLanding();
 }
 
+/**
+ * Bootstraps the application: theme, menu, routing.
+ */
 function init() {
+  mainContent = document.getElementById('main-content');
+
   initTheme();
   initMenu();
-  document.querySelector('.theme-toggle').addEventListener('click', toggleTheme);
-  window.addEventListener('hashchange', onHashChange);
-  renderLanding();
+
+  mainContent.closest('body')
+    .querySelector('.theme-toggle')
+    .addEventListener('click', toggleTheme);
+
+  window.addEventListener('hashchange', route);
+  route();
 }
 
 document.addEventListener('DOMContentLoaded', init);

@@ -188,7 +188,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### ~~Step 1 — Setup npm e scaffolding progetto~~ ✅
+### Step 1 — [DONE] Setup npm e scaffolding progetto
 **Obiettivo:** Inizializzare il progetto npm, creare la struttura di cartelle e il dev server.
 **File coinvolti:** `package.json`, `.gitignore`, `index.html`, cartelle `css/`, `js/`, `assets/photos/`
 - `npm init` con le info base del progetto
@@ -202,7 +202,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### ~~Step 2 — Dati di esempio e stili base~~ ✅
+### Step 2 — [DONE] Dati di esempio e stili base
 **Obiettivo:** Preparare i dati dei viaggi e il CSS fondamentale.
 **File coinvolti:** `js/data.js`, `js/app.js`, `css/style.css`
 - `js/data.js`: 2-3 viaggi di esempio con foto placeholder da `picsum.photos` (nessuna immagine locale necessaria per ora)
@@ -213,7 +213,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### ~~Step 3 — Theming dark/light~~ ✅
+### Step 3 — [DONE] Theming dark/light
 **Obiettivo:** Implementare il sistema di temi con toggle.
 **File coinvolti:** `js/theme.js`, `css/style.css`, `index.html`
 - `css/style.css`: due set di variabili CSS sotto `[data-theme="dark"]` e `[data-theme="light"]`
@@ -225,7 +225,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### ~~Step 4 — Navbar sticky + menu viaggi~~ ✅
+### Step 4 — [DONE] Navbar sticky + menu viaggi
 **Obiettivo:** Barra di navigazione funzionante con dropdown viaggi.
 **File coinvolti:** `js/menu.js`, `css/style.css`
 - `js/menu.js`: generazione dinamica del dropdown dai dati, hamburger toggle, scroll listener per compattamento
@@ -235,7 +235,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 5 — Landing page con trip cards
+### Step 5 — [DONE] Landing page con trip cards
 **Obiettivo:** La home page mostra le card dei viaggi.
 **File coinvolti:** `js/gallery.js`, `css/style.css`
 - `js/gallery.js`: funzione per renderizzare le trip card nel `<main>`
@@ -246,7 +246,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 6 — Routing e vista galleria viaggio
+### Step 6 — [DONE] Routing e vista galleria viaggio
 **Obiettivo:** Click su una card o voce menu porta alla galleria foto del viaggio.
 **File coinvolti:** `js/app.js`, `js/gallery.js`, `css/style.css`
 - `js/app.js`: listener `hashchange`, logica routing (landing vs galleria)
