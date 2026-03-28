@@ -454,7 +454,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 13 — Admin: login e routing
+### Step 13 — [DONE] Admin: login e routing
 **Obiettivo:** Implementare l'autenticazione e la rotta `#admin`.
 **File coinvolti:** `js/auth.js`, `js/app.js`, `css/style.css`
 - `js/auth.js`: hash SHA-256 delle credenziali (`Admin`/`Admin`), funzione di verifica, gestione sessione in `sessionStorage`
@@ -467,7 +467,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 14 — Admin: dashboard e trip editor
+### Step 14 — [DONE] Admin: dashboard e trip editor
 **Obiettivo:** Pannello admin con dashboard e gestione viaggi, con persistenza in localStorage.
 **File coinvolti:** `js/admin.js`, `css/style.css`
 - Dashboard: contatori (viaggi pubblicati, draft, foto totali, tag), lista viaggi con badge stato

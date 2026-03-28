@@ -6,6 +6,8 @@ import { renderFilterBar, getFilteredTrips, resetFilters } from './filters.js';
 import { renderStats } from './stats.js';
 import { destroyMap } from './map.js';
 import { renderSearchView } from './search.js';
+import { isAuthenticated, renderLoginForm } from './auth.js';
+import { renderAdminPanel } from './admin.js';
 
 const BASE_TITLE = 'Surprise — Travel Photography';
 
@@ -285,6 +287,26 @@ function renderAboutView(container) {
 }
 
 /**
+ * Renders the admin view — login form or admin panel depending on session state.
+ */
+function renderAdminView() {
+  stopSlideshow();
+  document.title = 'Admin — Surprise';
+
+  if (isAuthenticated()) {
+    renderAdminPanel(mainContent, () => {
+      /* Refresh public data that depends on trips (footer, etc.) */
+      populateFooterTrips();
+    });
+    return;
+  }
+
+  renderLoginForm(mainContent, () => {
+    renderAdminView();
+  });
+}
+
+/**
  * Renders the 404 not-found page.
  */
 function render404() {
@@ -404,6 +426,11 @@ function route() {
       return;
     }
 
+    if (hash === '#admin') {
+      renderAdminView();
+      return;
+    }
+
     if (!hash || hash === '#' || hash === '') {
       renderLanding();
       return;
@@ -473,6 +500,8 @@ function init() {
   } else if (hash === '#about') {
     document.title = 'Chi sono — Surprise';
     renderAboutView(mainContent);
+  } else if (hash === '#admin') {
+    renderAdminView();
   } else if (!hash || hash === '#' || hash === '') {
     renderLanding();
   } else {

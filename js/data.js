@@ -1,4 +1,32 @@
-export const trips = [
+/** Storage key for admin-modified trip data */
+const STORAGE_KEY = 'surprise_trips_data';
+
+/**
+ * Loads trip data from localStorage if available, otherwise uses defaults.
+ *
+ * @returns {Object[]} The trips array.
+ */
+const loadTrips = () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      /* Corrupted data — fall back to defaults */
+    }
+  }
+  return null;
+};
+
+/**
+ * Persists the current trips array to localStorage.
+ */
+const saveTrips = () => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(trips));
+};
+
+/** Default trip data — used when no localStorage data exists */
+const defaultTrips = [
   {
     id: "giappone",
     name: "Giappone",
@@ -114,3 +142,8 @@ export const trips = [
     ]
   }
 ];
+
+/** Mutable trips array — loaded from localStorage or defaults */
+export const trips = loadTrips() || structuredClone(defaultTrips);
+
+export { saveTrips, defaultTrips };

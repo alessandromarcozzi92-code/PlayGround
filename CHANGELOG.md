@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Admin dashboard with stats cards (published, drafts, photos, tags) and trip list with status badges (Step 14).
+- Trip editor: create/edit trips with name, date, color picker, description, cover/hero URLs, tags, and published toggle (Step 14).
+- `admin.js` module: dashboard rendering, trip list with inline actions (edit, toggle publish, delete), trip editor form (Step 14).
+- localStorage persistence for trip data — admin changes survive browser sessions without export (Step 14).
+- Admin login form at `#admin` with SHA-256 credential verification and sessionStorage-based session (Step 13).
+- `auth.js` module: SHA-256 hashing via Web Crypto API, credential verification, session create/destroy, login form rendering.
+- Admin panel placeholder with logout button — full dashboard coming in Step 14.
 - Full-text search view (`#search`) with live results, debounced input, grouped results by type (trips, photos, sections/POI), search term highlighting, and suggestion chips (Step 10).
 - `search.js` module: search logic across trip names, descriptions, tags, photo captions, section texts, and POI names. Click on photo results opens the lightbox.
 - Search button in bottom nav now navigates to `#search`.
