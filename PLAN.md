@@ -427,7 +427,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 11 — Sezione About
+### Step 11 — [DONE] Sezione About
 **Obiettivo:** Aggiungere una pagina "Chi sono" raggiungibile dalla navbar.
 **File coinvolti:** `js/app.js`, `js/menu.js`, `css/style.css`
 - `js/app.js`: aggiungere rotta `#about` al routing

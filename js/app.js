@@ -195,6 +195,96 @@ const renderAboutTeaser = (container) => {
 };
 
 /**
+ * Renders the About page with bio, profile photo and social links.
+ *
+ * @param {HTMLElement} container - Parent element.
+ */
+function renderAboutView(container) {
+  const published = trips.filter(t => t.published);
+  const totalPhotos = published.reduce((sum, t) => sum + t.photos.length, 0);
+  const countries = new Set(published.flatMap(t => t.tags)).size;
+
+  container.innerHTML = `
+    <section class="about">
+      <div class="about__hero">
+        <div class="about__avatar-wrapper">
+          <img src="https://picsum.photos/seed/avatar-surprise/400/400" alt="Alessandro" class="about__avatar">
+        </div>
+        <h1 class="about__name">Alessandro Marcozzi</h1>
+        <p class="about__role">Travel Photographer</p>
+      </div>
+
+      <div class="about__body">
+        <div class="about__section">
+          <h2 class="about__heading">Chi sono</h2>
+          <p class="about__text">
+            Fotografo per passione, viaggiatore per vocazione. Credo che ogni luogo abbia una storia da raccontare
+            e che la fotografia sia il modo piu autentico per catturarla. Dai templi dorati del Giappone ai ghiacciai
+            dell'Islanda, cerco la luce giusta per trasformare un momento in un ricordo eterno.
+          </p>
+          <p class="about__text">
+            Surprise nasce come diario visivo dei miei viaggi: una raccolta di immagini, storie e punti di interesse
+            che spero possano ispirare altri a esplorare il mondo con occhi curiosi.
+          </p>
+        </div>
+
+        <div class="about__stats">
+          <div class="about__stat">
+            <span class="about__stat-value">${published.length}</span>
+            <span class="about__stat-label">Viaggi</span>
+          </div>
+          <div class="about__stat">
+            <span class="about__stat-value">${totalPhotos}</span>
+            <span class="about__stat-label">Foto</span>
+          </div>
+          <div class="about__stat">
+            <span class="about__stat-value">${countries}</span>
+            <span class="about__stat-label">Tag</span>
+          </div>
+        </div>
+
+        <div class="about__section">
+          <h2 class="about__heading">Contatti</h2>
+          <p class="about__text">
+            Vuoi collaborare, chiedere informazioni su un viaggio o semplicemente fare due chiacchiere?
+            Scrivimi o seguimi sui social.
+          </p>
+          <div class="about__socials">
+            <a href="#" class="about__social" aria-label="Instagram">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+              <span>Instagram</span>
+            </a>
+            <a href="#" class="about__social" aria-label="GitHub">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+            <a href="mailto:hello@surprise.travel" class="about__social" aria-label="Email">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span>Email</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="about__back">
+        <a href="#" class="about__back-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+          </svg>
+          Torna alla home
+        </a>
+      </div>
+    </section>
+  `;
+}
+
+/**
  * Renders the 404 not-found page.
  */
 function render404() {
@@ -307,6 +397,13 @@ function route() {
       return;
     }
 
+    if (hash === '#about') {
+      stopSlideshow();
+      document.title = 'Chi sono — Surprise';
+      renderAboutView(mainContent);
+      return;
+    }
+
     if (!hash || hash === '#' || hash === '') {
       renderLanding();
       return;
@@ -350,6 +447,9 @@ function init() {
   } else if (hash === '#search') {
     document.title = 'Cerca — Surprise';
     renderSearchView(mainContent);
+  } else if (hash === '#about') {
+    document.title = 'Chi sono — Surprise';
+    renderAboutView(mainContent);
   } else if (!hash || hash === '#' || hash === '') {
     renderLanding();
   } else {
