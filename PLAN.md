@@ -480,7 +480,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 15 — Admin: section editor e photo organizer
+### Step 15 — [DONE] Admin: section editor e photo organizer
 **Obiettivo:** Gestione sezioni split e foto dall'admin.
 **File coinvolti:** `js/admin.js`, `css/style.css`
 - **Section editor**: per ogni viaggio, lista sezioni con aggiungi/rimuovi/riordina. Per ogni sezione: tipo (text-image/image-text), titolo, testo, media (tipo image/video, src, caption/poster)
@@ -490,7 +490,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 16 — Admin: POI editor e tag manager
+### Step 16 — [DONE] Admin: POI editor e tag manager
 **Obiettivo:** Gestione punti di interesse e tag dall'admin.
 **File coinvolti:** `js/admin.js`, `css/style.css`
 - **POI editor**: per ogni viaggio, lista POI con campi lat/lng, nome, icona (select con categorie), nota. Aggiunta/rimozione. Mini-preview mappa Leaflet che mostra il punto sulla mappa
