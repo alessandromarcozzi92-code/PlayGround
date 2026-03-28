@@ -1581,14 +1581,23 @@ main {
 /* ===== Footer ===== */
 .site-footer {
   background: var(--bg-secondary);
-  border-top: 1px solid var(--border);
   padding-bottom: 100px;
   transition: background-color 0.3s ease;
 }
 
 .site-footer__band {
-  height: 4px;
-  background: linear-gradient(90deg, #E63946, #457B9D, #E9C46A, #2A9D8F, #E76F51);
+  height: 48px;
+  background: linear-gradient(
+    135deg,
+    #E63946 0%,
+    #457B9D 25%,
+    #E9C46A 50%,
+    #2A9D8F 75%,
+    #E76F51 100%
+  );
+  mask-image: linear-gradient(to bottom, transparent, black 40%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 40%);
+  opacity: 0.7;
 }
 
 .site-footer__content {
@@ -1603,17 +1612,23 @@ main {
   flex: 1;
 }
 
+.site-footer__col--brand {
+  flex: 1.3;
+}
+
 .site-footer__logo {
   font-family: var(--font-display);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: 700;
   margin-bottom: var(--space-sm);
+  letter-spacing: -0.02em;
 }
 
 .site-footer__tagline {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.7;
+  max-width: 28ch;
 }
 
 .site-footer__heading {
@@ -1623,6 +1638,10 @@ main {
   color: var(--text-secondary);
   margin-bottom: var(--space-md);
   font-weight: 600;
+}
+
+.site-footer__heading--trips {
+  margin-top: var(--space-lg);
 }
 
 .site-footer__links {
@@ -1636,10 +1655,21 @@ main {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
   transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
 
   &:hover {
     color: var(--text-primary);
   }
+}
+
+.site-footer__link-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
 .site-footer__socials {
@@ -1657,11 +1687,12 @@ main {
   border-radius: 50%;
   border: 1.5px solid var(--border);
   color: var(--text-secondary);
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 
   &:hover {
     color: var(--text-primary);
     border-color: var(--text-primary);
+    background: var(--border);
   }
 }
 
@@ -1680,12 +1711,13 @@ main {
 
 .site-footer__bottom {
   text-align: center;
-  padding: var(--space-lg) var(--space-lg) 0;
+  padding: var(--space-lg) var(--space-lg) var(--space-sm);
   max-width: var(--max-width);
   margin: 0 auto;
   border-top: 1px solid var(--border);
   font-size: var(--font-size-xs);
   color: var(--text-secondary);
+  letter-spacing: 0.02em;
 }
 
 /* ===== Search View ===== */
@@ -2124,8 +2156,16 @@ main {
     padding: var(--space-xl) var(--space-md) var(--space-md);
   }
 
+  .site-footer__col--brand {
+    flex: 1;
+  }
+
+  .site-footer__tagline {
+    max-width: none;
+  }
+
   .site-footer__bottom {
-    padding: var(--space-md) var(--space-md) 0;
+    padding: var(--space-md) var(--space-md) var(--space-xs);
   }
 
   .search-view {

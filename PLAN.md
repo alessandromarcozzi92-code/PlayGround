@@ -439,7 +439,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 12 — Footer migliorato
+### Step 12 — [DONE] Footer migliorato
 **Obiettivo:** Ridisegnare il footer con layout a 3 colonne e banda decorativa.
 **File coinvolti:** `index.html`, `css/style.css`
 - **Colonna 1:** Logo "Surprise" + tagline

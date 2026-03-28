@@ -417,6 +417,28 @@ function route() {
 }
 
 /**
+ * Populates the footer "Viaggi recenti" list with the latest published trips.
+ */
+function populateFooterTrips() {
+  const list = document.getElementById('footer-recent-trips');
+  if (!list) return;
+
+  const recent = trips
+    .filter(t => t.published)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 3);
+
+  list.innerHTML = recent.map(trip => `
+    <li>
+      <a href="#trip/${trip.id}" class="site-footer__link">
+        <span class="site-footer__link-dot" style="background: ${trip.color}"></span>
+        ${trip.name}
+      </a>
+    </li>
+  `).join('');
+}
+
+/**
  * Bootstraps the application: theme, menu, routing.
  */
 function init() {
@@ -424,6 +446,7 @@ function init() {
 
   initTheme();
   initMenu();
+  populateFooterTrips();
 
   mainContent.closest('body')
     .querySelector('.theme-toggle')
