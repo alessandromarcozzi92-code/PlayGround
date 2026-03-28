@@ -91,6 +91,7 @@ export const trips = [
 - Foto galleria: fade-in con `IntersectionObserver`
 - Lightbox: fade + scale in/out
 - Navbar: riduzione altezza + aggiunta ombra on scroll
+- **Transizione tra viste:** animazione fade-out/fade-in al passaggio tra landing e galleria (e viceversa)
 
 ---
 
@@ -104,13 +105,14 @@ export const trips = [
 - Il dropdown viaggi mostra un pallino colorato accanto a ogni nome
 
 ### 2. Landing Page (Hero + Trip Cards)
-- Sezione hero con titolo grande e sottotitolo
+- **Sezione hero immersiva:** immagine/slideshow a tutto schermo delle migliori foto dei viaggi, con overlay sfumato, titolo grande e sottotitolo sovrapposti. Non un semplice titolo su sfondo piatto — la hero deve essere il pezzo forte del sito.
 - Griglia di card, una per viaggio
 - Ogni card: immagine cover, overlay gradient con nome + data, bordo bottom nel colore del viaggio
 - Hover: leggero zoom immagine + glow con il colore del viaggio
 
 ### 3. Vista Galleria Viaggio
 - Transizione dalla landing via hash routing (`#trip/giappone`)
+- **Animazione di transizione:** fade-out della vista corrente, fade-in della nuova vista (non un semplice swap del DOM)
 - Header con nome, descrizione, data — accento nel colore del viaggio
 - Bottone "Torna ai viaggi"
 - Griglia foto responsive
@@ -145,19 +147,34 @@ export const trips = [
 - Breve bio, foto profilo, contatti/social
 - Gestita come vista separata via hash routing (`#about`)
 
-### 9. Pannello Admin (`#admin`)
+### 9. Footer
+- Copyright e credits
+- Link a sezione About e contatti/social
+- Coerente col tema dark/light
+
+### 10. Routing robusto
+- Hash routing con gestione di rotte inesistenti (pagina 404 con messaggio e link alla home)
+- `document.title` aggiornato dinamicamente per ogni vista (es. "Giappone — Surprise", "About — Surprise")
+- Transizione animata tra le viste (fade-out/fade-in)
+
+### 11. Gestione errori immagini (sito pubblico)
+- Fallback/placeholder visivo per immagini che non caricano (`onerror` handler)
+- Nessuna immagine rotta visibile all'utente — sempre un placeholder coerente col design
+
+### 12. Pannello Admin (`#admin`)
 - Rotta `#admin` — se non autenticato, mostra il form di login
 - **Login**: form con username e password, credenziali verificate tramite hash SHA-256 confrontato con hash salvato come costante (credenziali iniziali: username `Admin`, password `Admin`)
+- **Nota:** questa è una protezione cosmetica/deterrente, non sicurezza reale — le credenziali e l'hash sono nel JS client-side e bypassabili da chiunque apra la console
 - **Sessione**: al login riuscito, salva un token di sessione in `sessionStorage` (scade alla chiusura del tab)
 - **Dashboard**: panoramica rapida — n. viaggi (pubblicati/draft), n. foto totali, n. tag, foto per viaggio
 - **Trip editor**: form visuale per creare/modificare un viaggio (nome, data, colore con color picker, descrizione, tags, published). Lista viaggi con badge "Draft"/"Pubblicato"
-- **Photo organizer**: per ogni viaggio, lista foto con drag & drop per riordinare, modifica caption inline, scelta cover, segnalazione immagini rotte (broken image checker)
+- **Photo organizer**: per ogni viaggio, lista foto con drag & drop per riordinare (solo desktop — su mobile usare bottoni su/giù come fallback), modifica caption inline, scelta cover, segnalazione immagini rotte (broken image checker)
 - **Tag manager**: lista tag con conteggio viaggi per tag, rinomina, elimina, merge tag duplicati
-- **Color palette overview**: griglia visiva di tutti i colori dei viaggi, segnala coppie troppo simili
+- **Persistenza intermedia**: le modifiche fatte nell'admin vengono salvate in `localStorage` oltre che in memoria, così non si perdono tra una sessione e l'altra senza dover esportare ogni volta
 - **Esporta/Importa**: bottone "Esporta data.js" scarica il file aggiornato. Bottone "Importa JSON" carica dati da file
 - **Logout**: torna alla home pubblica, cancella sessione
 
-### 10. Accessibilita (a11y)
+### 13. Accessibilita (a11y)
 - `aria-label` su tutti i controlli interattivi (toggle tema, hamburger, lightbox, filtri)
 - Focus trap nel lightbox (Tab cicla solo tra i controlli del lightbox)
 - `skip-to-content` link nascosto, visibile on focus
@@ -171,10 +188,10 @@ export const trips = [
 | Modulo | Responsabilita |
 |--------|---------------|
 | `data.js` | Esporta l'array `trips` |
-| `app.js` | Entry point: inizializza tema, menu, routing. Ascolta `hashchange` per navigare tra landing e galleria |
+| `app.js` | Entry point: inizializza tema, menu, routing. Ascolta `hashchange` per navigare tra landing e galleria. Gestisce 404 e aggiorna `document.title` |
 | `theme.js` | Toggle dark/light, persistenza localStorage, rispetto `prefers-color-scheme` iniziale |
 | `menu.js` | Genera navbar con dropdown viaggi, gestisce hamburger mobile, comportamento sticky on scroll |
-| `gallery.js` | Renderizza trip cards (landing) e griglia foto (galleria), gestisce lightbox completo |
+| `gallery.js` | Renderizza trip cards (landing) e griglia foto (galleria), gestisce lightbox completo, gestisce fallback immagini rotte |
 | `filters.js` | Filtraggio per tag e ordinamento per data sulla landing page |
 | `stats.js` | Calcola e renderizza i contatori animati nella hero (viaggi, paesi, foto) |
 | `auth.js` | Login admin: validazione credenziali via hash SHA-256, gestione sessione in sessionStorage |
@@ -235,26 +252,36 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 5 — [DONE] Landing page con trip cards
-**Obiettivo:** La home page mostra le card dei viaggi.
+### Step 5 — [DA RIVEDERE] Landing page con trip cards
+**Obiettivo:** La home page mostra le card dei viaggi con una hero section immersiva.
 **File coinvolti:** `js/gallery.js`, `css/style.css`
+
+> **Da sistemare:** La hero section attuale è un semplice titolo + sottotitolo su sfondo piatto. Deve diventare immersiva: immagine/slideshow a tutto schermo con overlay sfumato e testo sovrapposto. Aggiungere anche un fallback `onerror` sulle immagini delle card per gestire foto che non caricano.
+
 - `js/gallery.js`: funzione per renderizzare le trip card nel `<main>`
+- Hero section immersiva: immagine/slideshow a tutto schermo delle migliori foto, overlay gradient, titolo e sottotitolo sovrapposti
 - `css/style.css`: layout flex-wrap per le card, hover effects (scale, glow colorato), overlay gradient
 - `js/app.js`: chiamare il rendering delle card all'avvio
+- Fallback placeholder su immagini rotte (`onerror` handler)
 
-**Verifica:** Le card appaiono in griglia, ogni card ha il suo colore accento sul bordo. L'hover mostra zoom e glow. Le foto placeholder da picsum si caricano correttamente.
+**Verifica:** La hero cattura l'attenzione con un'immagine a tutto schermo. Le card appaiono in griglia, ogni card ha il suo colore accento sul bordo. L'hover mostra zoom e glow. Le foto placeholder da picsum si caricano correttamente. Le immagini rotte mostrano un placeholder coerente.
 
 ---
 
-### Step 6 — [DONE] Routing e vista galleria viaggio
-**Obiettivo:** Click su una card o voce menu porta alla galleria foto del viaggio.
+### Step 6 — [DA RIVEDERE] Routing e vista galleria viaggio
+**Obiettivo:** Click su una card o voce menu porta alla galleria foto del viaggio, con routing robusto.
 **File coinvolti:** `js/app.js`, `js/gallery.js`, `css/style.css`
-- `js/app.js`: listener `hashchange`, logica routing (landing vs galleria)
-- `js/gallery.js`: funzione rendering galleria (header colorato + griglia foto flex)
-- `css/style.css`: stili galleria, header con accento, griglia foto responsive
-- Collegare click card e click menu al cambio hash
 
-**Verifica:** Click card -> URL cambia in `#trip/giappone` -> appare la galleria con header colorato. Bottone "Torna" riporta alla landing. Ricaricare su `#trip/giappone` apre direttamente la galleria (deep linking).
+> **Da sistemare:** Attualmente il routing non gestisce rotte inesistenti (es. `#trip/nonexistent` o `#invalid` ricadono silenziosamente sulla landing). Aggiungere: pagina 404 per rotte/trip non trovati, aggiornamento dinamico di `document.title` per ogni vista, e animazione di transizione fade tra le viste (non semplice swap del DOM).
+
+- `js/app.js`: listener `hashchange`, logica routing (landing vs galleria vs 404)
+- Gestione 404: se la rotta non esiste o il trip ID non è valido, mostrare una pagina "Non trovato" con link alla home
+- `document.title` aggiornato dinamicamente: "Surprise — Travel Photography" per la landing, "Giappone — Surprise" per i trip, ecc.
+- Animazione di transizione: fade-out della vista corrente → swap contenuto → fade-in della nuova vista
+- `js/gallery.js`: funzione rendering galleria (header colorato + griglia foto flex)
+- `css/style.css`: stili galleria, header con accento, griglia foto responsive, animazione transizione vista
+
+**Verifica:** Click card -> URL cambia in `#trip/giappone` -> transizione animata -> appare la galleria con header colorato. Il titolo del browser cambia. `#trip/nonexistent` mostra pagina 404. Bottone "Torna" riporta alla landing. Ricaricare su `#trip/giappone` apre direttamente la galleria (deep linking).
 
 ---
 
@@ -306,6 +333,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 **Obiettivo:** Implementare l'autenticazione e la rotta `#admin`.
 **File coinvolti:** `js/auth.js`, `js/app.js`, `css/style.css`
 - `js/auth.js`: hash SHA-256 delle credenziali (`Admin`/`Admin`), funzione di verifica, gestione sessione in `sessionStorage`
+- **Nota:** protezione cosmetica/deterrente — credenziali e hash sono nel JS client-side. Non è sicurezza reale.
 - `js/app.js`: aggiungere rotta `#admin` — se non autenticato mostra il login, se autenticato mostra il pannello
 - `css/style.css`: stili form login (centrato, card con ombra, input stilizzati, errore inline)
 - Il form login mostra un messaggio di errore se le credenziali sono sbagliate
@@ -315,25 +343,25 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 ---
 
 ### Step 12 — Admin: dashboard e trip editor
-**Obiettivo:** Pannello admin con dashboard e gestione viaggi.
+**Obiettivo:** Pannello admin con dashboard e gestione viaggi, con persistenza in localStorage.
 **File coinvolti:** `js/admin.js`, `css/style.css`
 - Dashboard: contatori (viaggi pubblicati, draft, foto totali, tag), lista viaggi con badge stato
 - Trip editor: form per creare/modificare un viaggio (nome, data, color picker, descrizione, tags, toggle published)
 - Modifica inline dalla lista viaggi
 - Bottone logout nella navbar admin
+- **Persistenza localStorage:** le modifiche fatte nell'admin vengono salvate in `localStorage` oltre che in memoria, così non si perdono tra sessioni senza dover esportare ogni volta
 
-**Verifica:** La dashboard mostra le statistiche corrette. Creare un viaggio -> appare nella lista. Modificare un campo -> il dato si aggiorna. Toggle published -> il badge cambia. I draft non appaiono nel sito pubblico.
+**Verifica:** La dashboard mostra le statistiche corrette. Creare un viaggio -> appare nella lista. Modificare un campo -> il dato si aggiorna. Toggle published -> il badge cambia. I draft non appaiono nel sito pubblico. Chiudere e riaprire il tab -> le modifiche sono ancora presenti.
 
 ---
 
 ### Step 13 — Admin: photo organizer e tag manager
 **Obiettivo:** Gestione foto e tag dall'admin.
 **File coinvolti:** `js/admin.js`, `css/style.css`
-- Photo organizer: per ogni viaggio, griglia foto con drag & drop per riordinare, modifica caption inline, scelta cover, broken image checker (evidenzia foto con URL rotto)
+- Photo organizer: per ogni viaggio, griglia foto con drag & drop per riordinare (solo desktop), **bottoni su/giù come fallback su mobile/touch**, modifica caption inline, scelta cover, broken image checker (evidenzia foto con URL rotto)
 - Tag manager: lista tag con conteggio viaggi, rinomina, elimina, segnalazione tag non usati
-- Color palette overview: griglia visiva dei colori di tutti i viaggi, segnala coppie con differenza < 30 in distanza colore
 
-**Verifica:** Drag & drop riordina le foto. Caption si modifica inline. Broken checker segnala immagini inesistenti. Tag manager mostra conteggi corretti, rinomina aggiorna tutti i viaggi.
+**Verifica:** Drag & drop riordina le foto (desktop). Bottoni su/giù funzionano su mobile. Caption si modifica inline. Broken checker segnala immagini inesistenti. Tag manager mostra conteggi corretti, rinomina aggiorna tutti i viaggi.
 
 ---
 
@@ -361,16 +389,17 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 16 — Polish e animazioni
+### Step 16 — Polish, animazioni e SEO
 **Obiettivo:** Rifinitura finale dell'esperienza utente.
 **File coinvolti:** tutti
 - Lazy loading immagini (`loading="lazy"`)
 - Animazioni di entrata card (fade-in/slide-up con IntersectionObserver)
 - Responsive tuning finale (375px, 768px, 1440px)
 - Favicon e meta tag Open Graph
+- Meta tag SEO: `<title>` dinamico (già gestito nello Step 6), `<meta name="description">`, Open Graph tags
 - Pulizia codice e test finale
 
-**Verifica:** Tutte le verifiche degli step precedenti passano. Le animazioni sono fluide. Il sito e' usabile su mobile, tablet e desktop.
+**Verifica:** Tutte le verifiche degli step precedenti passano. Le animazioni sono fluide. Il sito e' usabile su mobile, tablet e desktop. I meta tag sono presenti e corretti.
 
 ---
 
