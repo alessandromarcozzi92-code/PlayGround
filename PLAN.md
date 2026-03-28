@@ -413,7 +413,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 10 — Ricerca
+### Step 10 — [DONE] Ricerca
 **Obiettivo:** Implementare la funzionalita di ricerca full-text accessibile dalla bottom nav.
 **File coinvolti:** `js/search.js` (nuovo), `js/app.js`, `js/menu.js`, `css/style.css`
 - `js/search.js`: modulo di ricerca — cerca tra nomi viaggi, descrizioni, tag, caption foto, testi sezioni, nomi POI. Debounce input (~300ms). Rendering risultati raggruppati per tipo (viaggi, foto, sezioni)

@@ -104,6 +104,8 @@ const handleNavClick = (e) => {
 
   if (id === 'home') {
     window.location.hash = '';
+  } else if (id === 'search') {
+    window.location.hash = 'search';
   } else if (id === 'admin') {
     window.location.hash = 'admin';
   }
@@ -154,6 +156,8 @@ export const updateNavFromHash = (hash) => {
     setActiveNav('home');
   } else if (hash.startsWith('#trip/')) {
     setActiveNav('trips');
+  } else if (hash === '#search') {
+    setActiveNav('search');
   } else if (hash === '#admin') {
     setActiveNav('admin');
   }

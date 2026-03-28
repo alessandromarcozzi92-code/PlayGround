@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Full-text search view (`#search`) with live results, debounced input, grouped results by type (trips, photos, sections/POI), search term highlighting, and suggestion chips (Step 10).
+- `search.js` module: search logic across trip names, descriptions, tags, photo captions, section texts, and POI names. Click on photo results opens the lightbox.
+- Search button in bottom nav now navigates to `#search`.
 - Interactive Leaflet map on trip pages with POI markers, popups, auto-zoom, and theme-aware tiles (Step 9).
 - `map.js` module: Leaflet initialization, colored circle markers by POI category, popup with name/note, `fitBounds()` auto-zoom, dark/light tile switching via MutationObserver.
 - Map cleanup on route change to prevent memory leaks.

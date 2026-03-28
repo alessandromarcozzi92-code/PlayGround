@@ -5,6 +5,7 @@ import { renderTripCards, renderTripGallery } from './gallery.js';
 import { renderFilterBar, getFilteredTrips, resetFilters } from './filters.js';
 import { renderStats } from './stats.js';
 import { destroyMap } from './map.js';
+import { renderSearchView } from './search.js';
 
 const BASE_TITLE = 'Surprise — Travel Photography';
 
@@ -299,6 +300,13 @@ function route() {
       return;
     }
 
+    if (hash === '#search') {
+      stopSlideshow();
+      document.title = 'Cerca — Surprise';
+      renderSearchView(mainContent);
+      return;
+    }
+
     if (!hash || hash === '#' || hash === '') {
       renderLanding();
       return;
@@ -339,6 +347,9 @@ function init() {
     } else {
       render404();
     }
+  } else if (hash === '#search') {
+    document.title = 'Cerca — Surprise';
+    renderSearchView(mainContent);
   } else if (!hash || hash === '#' || hash === '') {
     renderLanding();
   } else {
