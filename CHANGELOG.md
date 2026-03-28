@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Fullscreen lightbox with prev/next navigation, keyboard controls (arrows, Escape), counter, caption, and focus trap (Step 7).
 - Hash-based routing: `#trip/<id>` opens the trip gallery view with deep linking support (Step 6).
 - Trip gallery view with colored header, back button, photo grid, and captions (Step 6).
 - Trip cards with image overlay gradient, colored glow on hover, and tag pills (Step 5).

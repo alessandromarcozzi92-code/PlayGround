@@ -79,6 +79,9 @@ export const renderTripGallery = (container, trip) => {
     const item = document.createElement('figure');
     item.className = 'gallery-item';
     item.dataset.index = index;
+    item.setAttribute('tabindex', '0');
+    item.setAttribute('role', 'button');
+    item.setAttribute('aria-label', `Apri foto: ${photo.caption}`);
     item.innerHTML = `
       <img src="${photo.src}" alt="${photo.caption}" class="gallery-item__image" loading="lazy">
       <figcaption class="gallery-item__caption">${photo.caption}</figcaption>
@@ -86,8 +89,206 @@ export const renderTripGallery = (container, trip) => {
     grid.appendChild(item);
   });
 
+  // Event delegation for opening lightbox on click or Enter
+  grid.addEventListener('click', (e) => {
+    const item = e.target.closest('.gallery-item');
+    if (!item) return;
+    openLightbox(trip.photos, Number(item.dataset.index));
+  });
+
+  grid.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const item = e.target.closest('.gallery-item');
+    if (!item) return;
+    openLightbox(trip.photos, Number(item.dataset.index));
+  });
+
   container.appendChild(header);
   container.appendChild(grid);
+};
+
+// ── Lightbox ───────────────────────────────────────────────────
+
+/** @type {HTMLElement|null} */
+let lightboxEl = null;
+
+/** @type {Object[]} Current trip photos array */
+let lightboxPhotos = [];
+
+/** @type {number} Currently displayed photo index */
+let lightboxIndex = 0;
+
+/**
+ * Creates the lightbox DOM structure once and appends it to <body>.
+ *
+ * @returns {HTMLElement} The lightbox root element.
+ */
+const createLightbox = () => {
+  const el = document.createElement('div');
+  el.className = 'lightbox';
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-label', 'Visualizzatore foto');
+  el.setAttribute('aria-modal', 'true');
+  el.innerHTML = `
+    <div class="lightbox__backdrop"></div>
+    <div class="lightbox__content">
+      <img class="lightbox__image" src="" alt="">
+      <p class="lightbox__caption"></p>
+      <span class="lightbox__counter"></span>
+    </div>
+    <button class="lightbox__close" aria-label="Chiudi">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <button class="lightbox__prev" aria-label="Foto precedente">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <button class="lightbox__next" aria-label="Foto successiva">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9 6 15 12 9 18"/>
+      </svg>
+    </button>
+  `;
+
+  el.querySelector('.lightbox__backdrop').addEventListener('click', closeLightbox);
+  el.querySelector('.lightbox__close').addEventListener('click', closeLightbox);
+  el.querySelector('.lightbox__prev').addEventListener('click', () => navigateLightbox(-1));
+  el.querySelector('.lightbox__next').addEventListener('click', () => navigateLightbox(1));
+
+  document.body.appendChild(el);
+  return el;
+};
+
+/**
+ * Updates the lightbox image, caption, and counter to match the current index.
+ */
+const updateLightboxContent = () => {
+  const photo = lightboxPhotos[lightboxIndex];
+  const image = lightboxEl.querySelector('.lightbox__image');
+  const caption = lightboxEl.querySelector('.lightbox__caption');
+  const counter = lightboxEl.querySelector('.lightbox__counter');
+
+  image.src = photo.src;
+  image.alt = photo.caption;
+  caption.textContent = photo.caption;
+  counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
+
+  // Hide arrows when at boundaries
+  lightboxEl.querySelector('.lightbox__prev').style.visibility =
+    lightboxIndex === 0 ? 'hidden' : 'visible';
+  lightboxEl.querySelector('.lightbox__next').style.visibility =
+    lightboxIndex === lightboxPhotos.length - 1 ? 'hidden' : 'visible';
+};
+
+/**
+ * Opens the lightbox for the given photos array at the specified index.
+ *
+ * @param {Object[]} photos - Array of photo objects ({ src, caption }).
+ * @param {number}   index  - The index of the photo to display first.
+ */
+export const openLightbox = (photos, index) => {
+  if (!lightboxEl) lightboxEl = createLightbox();
+
+  // Re-attach if previously removed from DOM
+  if (!lightboxEl.parentNode) {
+    document.body.appendChild(lightboxEl);
+  }
+
+  lightboxPhotos = photos;
+  lightboxIndex = index;
+
+  updateLightboxContent();
+
+  // Force reflow so the browser renders the hidden state before transitioning
+  lightboxEl.offsetHeight; // eslint-disable-line no-unused-expressions
+
+  lightboxEl.classList.add('lightbox--open');
+  document.body.style.overflow = 'hidden';
+
+  document.addEventListener('keydown', handleLightboxKey);
+
+  // Move focus into the lightbox for a11y
+  lightboxEl.querySelector('.lightbox__close').focus();
+};
+
+/**
+ * Closes the lightbox and restores page scroll.
+ */
+const closeLightbox = () => {
+  if (!lightboxEl) return;
+  lightboxEl.classList.remove('lightbox--open');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', handleLightboxKey);
+
+  // Remove from DOM after transition to avoid blocking interaction on the page
+  lightboxEl.addEventListener('transitionend', () => {
+    if (!lightboxEl.classList.contains('lightbox--open')) {
+      lightboxEl.remove();
+    }
+  }, { once: true });
+};
+
+/**
+ * Navigates the lightbox by the given direction.
+ *
+ * @param {number} direction - +1 for next, -1 for previous.
+ */
+const navigateLightbox = (direction) => {
+  const next = lightboxIndex + direction;
+  if (next < 0 || next >= lightboxPhotos.length) return;
+  lightboxIndex = next;
+  updateLightboxContent();
+};
+
+/**
+ * Keyboard handler for lightbox navigation and close.
+ *
+ * @param {KeyboardEvent} e - The keyboard event.
+ */
+const handleLightboxKey = (e) => {
+  switch (e.key) {
+    case 'Escape':
+      closeLightbox();
+      break;
+    case 'ArrowLeft':
+      navigateLightbox(-1);
+      break;
+    case 'ArrowRight':
+      navigateLightbox(1);
+      break;
+    case 'Tab':
+      trapFocus(e);
+      break;
+  }
+};
+
+/**
+ * Traps keyboard focus inside the lightbox when Tab is pressed.
+ *
+ * @param {KeyboardEvent} e - The Tab keydown event.
+ */
+const trapFocus = (e) => {
+  const focusable = lightboxEl.querySelectorAll(
+    'button:not([style*="visibility: hidden"])'
+  );
+  if (focusable.length === 0) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
 };
 
 // ── Helpers ─────────────────────────────────────────────────────

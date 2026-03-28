@@ -258,7 +258,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 7 — Lightbox
+### Step 7 — [DONE] Lightbox
 **Obiettivo:** Visualizzazione foto fullscreen con navigazione.
 **File coinvolti:** `js/gallery.js`, `css/style.css`
 - `js/gallery.js`: logica lightbox (apertura, chiusura, navigazione, keyboard events)
