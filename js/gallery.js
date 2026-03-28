@@ -28,7 +28,8 @@ export const renderTripCards = (container, tripsList) => {
     card.innerHTML = `
       <a href="#trip/${trip.id}" class="trip-card__link">
         <div class="trip-card__image-wrapper">
-          <img src="${trip.cover}" alt="${trip.name}" class="trip-card__image" loading="lazy">
+          <img src="${trip.cover}" alt="${trip.name}" class="trip-card__image" loading="lazy"
+               onerror="this.style.display='none';this.parentElement.classList.add('trip-card__image-wrapper--broken')">
           <div class="trip-card__overlay">
             <h2 class="trip-card__name">${trip.name}</h2>
             <time class="trip-card__date">${formatDate(trip.date)}</time>
@@ -46,10 +47,11 @@ export const renderTripCards = (container, tripsList) => {
   });
 };
 
-// ── Trip Gallery (single trip view) ─────────────────────────────
+// ── Trip Gallery (narrative trip page) ─────────────────────────
 
 /**
- * Renders the full gallery view for a single trip.
+ * Renders the full narrative page for a single trip:
+ * hero → split sections → photo gallery.
  *
  * @param {HTMLElement} container - The main content element.
  * @param {Object}      trip      - The trip data object.
@@ -58,26 +60,74 @@ export const renderTripGallery = (container, trip) => {
   container.innerHTML = '';
   container.style.setProperty('--trip-color', trip.color);
 
-  const header = document.createElement('header');
-  header.className = 'gallery-header';
-  header.innerHTML = `
-    <a href="#" class="gallery-header__back" aria-label="Torna ai viaggi">
+  /* ── Trip Hero ── */
+  const heroSrc = trip.heroImage || trip.cover;
+  const hero = document.createElement('section');
+  hero.className = 'trip-hero';
+  hero.innerHTML = `
+    <div class="trip-hero__bg" style="background-image: url('${heroSrc}')"></div>
+    <div class="trip-hero__overlay"></div>
+    <a href="#" class="trip-hero__back" aria-label="Torna ai viaggi">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-           aria-hidden="true">
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <line x1="19" y1="12" x2="5" y2="12"/>
         <polyline points="12 19 5 12 12 5"/>
       </svg>
       <span>Tutti i viaggi</span>
     </a>
-    <div class="gallery-header__info">
-      <h1 class="gallery-header__title">${trip.name}</h1>
-      <p class="gallery-header__description">${trip.description}</p>
-      <time class="gallery-header__date">${formatDate(trip.date)}</time>
-      <span class="gallery-header__count">${trip.photos.length} foto</span>
+    <div class="trip-hero__content">
+      <h1 class="trip-hero__title">${trip.name}</h1>
+      <p class="trip-hero__description">${trip.description}</p>
+      <div class="trip-hero__meta">
+        <time>${formatDate(trip.date)}</time>
+        <span>&middot;</span>
+        <span>${trip.photos.length} foto</span>
+      </div>
     </div>
   `;
+  container.appendChild(hero);
 
+  /* ── Split Sections ── */
+  if (trip.sections && trip.sections.length > 0) {
+    const sectionsWrapper = document.createElement('div');
+    sectionsWrapper.className = 'trip-sections';
+
+    trip.sections.forEach(section => {
+      const el = document.createElement('section');
+      el.className = `split-section split-section--${section.type}`;
+
+      const mediaHTML = section.media.type === 'video'
+        ? `<video class="split-section__video" poster="${section.media.poster || ''}" controls preload="none" loading="lazy">
+             <source src="${section.media.src}" type="video/mp4">
+           </video>`
+        : `<img src="${section.media.src}" alt="${section.media.caption || section.title}" class="split-section__image" loading="lazy"
+               onerror="this.style.display='none';this.parentElement.classList.add('split-section__media--broken')">`;
+
+      el.innerHTML = `
+        <div class="split-section__media">
+          ${mediaHTML}
+          ${section.media.caption ? `<p class="split-section__caption">${section.media.caption}</p>` : ''}
+        </div>
+        <div class="split-section__text">
+          <h2 class="split-section__title">${section.title}</h2>
+          <p class="split-section__body">${section.text}</p>
+        </div>
+      `;
+
+      sectionsWrapper.appendChild(el);
+    });
+
+    container.appendChild(sectionsWrapper);
+    observeSections(sectionsWrapper);
+  }
+
+  /* ── Gallery Header ── */
+  const galleryLabel = document.createElement('div');
+  galleryLabel.className = 'gallery-label';
+  galleryLabel.innerHTML = '<h2 class="gallery-label__title">Galleria</h2>';
+  container.appendChild(galleryLabel);
+
+  /* ── Photo Grid ── */
   const grid = document.createElement('section');
   grid.className = 'gallery-grid';
 
@@ -89,13 +139,13 @@ export const renderTripGallery = (container, trip) => {
     item.setAttribute('role', 'button');
     item.setAttribute('aria-label', `Apri foto: ${photo.caption}`);
     item.innerHTML = `
-      <img src="${photo.src}" alt="${photo.caption}" class="gallery-item__image" loading="lazy">
+      <img src="${photo.src}" alt="${photo.caption}" class="gallery-item__image" loading="lazy"
+           onerror="this.style.display='none';this.parentElement.classList.add('gallery-item--broken')">
       <figcaption class="gallery-item__caption">${photo.caption}</figcaption>
     `;
     grid.appendChild(item);
   });
 
-  // Event delegation for opening lightbox on click or Enter
   grid.addEventListener('click', (e) => {
     const item = e.target.closest('.gallery-item');
     if (!item) return;
@@ -109,8 +159,25 @@ export const renderTripGallery = (container, trip) => {
     openLightbox(trip.photos, Number(item.dataset.index));
   });
 
-  container.appendChild(header);
   container.appendChild(grid);
+};
+
+/**
+ * Sets up IntersectionObserver to animate split sections on scroll.
+ *
+ * @param {HTMLElement} wrapper - The sections wrapper element.
+ */
+const observeSections = (wrapper) => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('split-section--visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  wrapper.querySelectorAll('.split-section').forEach(el => observer.observe(el));
 };
 
 // ── Lightbox ───────────────────────────────────────────────────
@@ -185,7 +252,6 @@ const updateLightboxContent = () => {
   caption.textContent = photo.caption;
   counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
 
-  // Hide arrows when at boundaries
   lightboxEl.querySelector('.lightbox__prev').style.visibility =
     lightboxIndex === 0 ? 'hidden' : 'visible';
   lightboxEl.querySelector('.lightbox__next').style.visibility =
@@ -201,7 +267,6 @@ const updateLightboxContent = () => {
 export const openLightbox = (photos, index) => {
   if (!lightboxEl) lightboxEl = createLightbox();
 
-  // Re-attach if previously removed from DOM
   if (!lightboxEl.parentNode) {
     document.body.appendChild(lightboxEl);
   }
@@ -211,7 +276,6 @@ export const openLightbox = (photos, index) => {
 
   updateLightboxContent();
 
-  // Force reflow so the browser renders the hidden state before transitioning
   lightboxEl.offsetHeight; // eslint-disable-line no-unused-expressions
 
   lightboxEl.classList.add('lightbox--open');
@@ -219,7 +283,6 @@ export const openLightbox = (photos, index) => {
 
   document.addEventListener('keydown', handleLightboxKey);
 
-  // Move focus into the lightbox for a11y
   lightboxEl.querySelector('.lightbox__close').focus();
 };
 
@@ -232,7 +295,6 @@ const closeLightbox = () => {
   document.body.style.overflow = '';
   document.removeEventListener('keydown', handleLightboxKey);
 
-  // Remove from DOM after transition to avoid blocking interaction on the page
   lightboxEl.addEventListener('transitionend', () => {
     if (!lightboxEl.classList.contains('lightbox--open')) {
       lightboxEl.remove();
