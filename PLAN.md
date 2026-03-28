@@ -340,7 +340,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 5 — [DA RIVEDERE] Home page editorial con hero immersiva
+### Step 5 — [DONE] Home page editorial con hero immersiva
 **Obiettivo:** La home page diventa un'esperienza editoriale con sezioni distinte.
 **File coinvolti:** `js/app.js`, `js/gallery.js`, `js/stats.js` (nuovo), `css/style.css`, `js/data.js`
 
@@ -362,7 +362,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 6 — [DA RIVEDERE] Routing robusto e pagina viaggio narrativa
+### Step 6 — [DONE] Routing robusto e pagina viaggio narrativa
 **Obiettivo:** Routing con 404, titoli dinamici, transizioni, e pagina viaggio ristrutturata.
 **File coinvolti:** `js/app.js`, `js/gallery.js`, `css/style.css`
 
@@ -399,7 +399,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 9 — Mappa interattiva con Leaflet
+### Step 9 — [DONE] Mappa interattiva con Leaflet
 **Obiettivo:** Integrare una mappa interattiva nella pagina viaggio con i punti di interesse.
 **File coinvolti:** `js/map.js` (nuovo), `js/gallery.js`, `css/style.css`, `index.html`
 - `index.html`: aggiungere CSS e JS di Leaflet via CDN

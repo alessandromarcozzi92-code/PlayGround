@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Interactive Leaflet map on trip pages with POI markers, popups, auto-zoom, and theme-aware tiles (Step 9).
+- `map.js` module: Leaflet initialization, colored circle markers by POI category, popup with name/note, `fitBounds()` auto-zoom, dark/light tile switching via MutationObserver.
+- Map cleanup on route change to prevent memory leaks.
+- Editorial home page with hero slideshow, featured latest trip, moments strip, animated stat counters, and about teaser (Step 5).
+- Narrative trip page with full-screen hero, parallax background, split text+media sections with scroll animations, and video support (Step 6).
+- 404 page for unknown routes, dynamic `document.title`, and fade transitions between views (Step 6).
 - Filter bar with tag buttons and date sort toggle on the landing page (Step 8).
 - `filters.js` module: tag filtering, date sorting, and filter bar rendering.
 - Card entrance animation with staggered fade-in on filter/sort change.

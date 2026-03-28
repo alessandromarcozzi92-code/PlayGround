@@ -1,3 +1,5 @@
+import { renderMap } from './map.js';
+
 const MONTH_LABELS = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
 // ── Trip Cards (landing) ────────────────────────────────────────
@@ -160,6 +162,20 @@ export const renderTripGallery = (container, trip) => {
   });
 
   container.appendChild(grid);
+
+  /* ── Map Section (only if POIs exist) ── */
+  if (trip.pois && trip.pois.length > 0) {
+    const mapSection = document.createElement('section');
+    mapSection.className = 'trip-map';
+    mapSection.innerHTML = `
+      <div class="trip-map__header">
+        <h2 class="trip-map__title">Mappa</h2>
+        <span class="trip-map__count">${trip.pois.length} punti di interesse</span>
+      </div>
+    `;
+    container.appendChild(mapSection);
+    renderMap(mapSection, trip.pois, trip.color);
+  }
 };
 
 /**

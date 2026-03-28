@@ -4,6 +4,7 @@ import { initMenu, updateNavFromHash } from './menu.js';
 import { renderTripCards, renderTripGallery } from './gallery.js';
 import { renderFilterBar, getFilteredTrips, resetFilters } from './filters.js';
 import { renderStats } from './stats.js';
+import { destroyMap } from './map.js';
 
 const BASE_TITLE = 'Surprise — Travel Photography';
 
@@ -283,6 +284,7 @@ function route() {
   window.scrollTo(0, 0);
 
   const render = () => {
+    destroyMap();
     const tripMatch = hash.match(/^#trip\/(.+)$/);
 
     if (tripMatch) {
