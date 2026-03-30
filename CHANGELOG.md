@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Favicon (SVG emoji camera icon) and Apple touch icon (Step 19).
+- SEO meta tags: `<meta name="description">`, `<meta name="author">`, Open Graph tags (`og:type`, `og:title`, `og:description`, `og:site_name`, `og:locale`) (Step 19).
+- Responsive breakpoint for small mobile (375px): compact hero, stacked stats, smaller moments items, adjusted typography (Step 19).
+- Responsive breakpoint for widescreen (1440px): wider max-width, larger cards/moments items, 4-column gallery grid (Step 19).
+
+### Changed
 - Admin dashboard with stats cards (published, drafts, photos, tags) and trip list with status badges (Step 14).
 - Trip editor: create/edit trips with name, date, color picker, description, cover/hero URLs, tags, and published toggle (Step 14).
 - `admin.js` module: dashboard rendering, trip list with inline actions (edit, toggle publish, delete), trip editor form (Step 14).

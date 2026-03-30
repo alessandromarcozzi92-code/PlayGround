@@ -525,7 +525,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 19 — Polish, animazioni e SEO
+### Step 19 — [DONE] Polish, animazioni e SEO
 **Obiettivo:** Rifinitura finale dell'esperienza utente.
 **File coinvolti:** tutti
 - Lazy loading immagini (`loading="lazy"`)
