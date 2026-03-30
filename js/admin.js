@@ -7,7 +7,7 @@
 
 /* global L */
 
-import { trips, saveTrips } from './data.js';
+import { trips, saveTrips, defaultTrips } from './data.js';
 import { destroySession } from './auth.js';
 
 /** Currently edited trip id (null = new trip form) */
@@ -49,6 +49,17 @@ const escAttr = (str) => String(str ?? '').replace(/"/g, '&quot;').replace(/</g,
 
 const POI_ICONS = ['temple', 'city', 'nature', 'food', 'beach', 'hotel', 'museum', 'default'];
 
+/** Show a temporary toast notification inside a container */
+const showToast = (parent, message, isError = false) => {
+  const existing = parent.querySelector('.admin-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = `admin-toast ${isError ? 'admin-toast--error' : ''}`;
+  toast.textContent = message;
+  parent.prepend(toast);
+  setTimeout(() => toast.remove(), 3500);
+};
+
 /* ─── SVG icon helpers ─── */
 
 const icons = {
@@ -74,6 +85,9 @@ const icons = {
   pin: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
   video: '<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+  download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+  refresh: '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
 };
 
 const svg = (name, size = 16) =>
@@ -217,8 +231,79 @@ const renderDashboardTab = (tabEl, container, onDataChange, { published, drafts,
       </ul>
     </div>
 
+    <div class="admin-data">
+      <h2 class="admin-data__title">Gestione dati</h2>
+      <div class="admin-data__actions">
+        <button class="admin-data__btn" id="btn-export" aria-label="Esporta backup JSON">
+          ${svg('download', 18)} Esporta JSON
+        </button>
+        <button class="admin-data__btn" id="btn-import" aria-label="Importa backup JSON">
+          ${svg('upload', 18)} Importa JSON
+        </button>
+        <button class="admin-data__btn admin-data__btn--danger" id="btn-reset" aria-label="Ripristina dati originali">
+          ${svg('refresh', 18)} Reset default
+        </button>
+      </div>
+      <input type="file" id="import-file" accept=".json" hidden>
+    </div>
+
     <div class="admin-editor" id="admin-editor" hidden></div>
   `;
+
+  /* ─── Data management handlers ─── */
+
+  tabEl.querySelector('#btn-export').addEventListener('click', () => {
+    const json = JSON.stringify(trips, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `trips-backup-${date}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(tabEl, 'Backup esportato con successo');
+  });
+
+  const fileInput = tabEl.querySelector('#import-file');
+  tabEl.querySelector('#btn-import').addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!Array.isArray(data)) throw new Error('Il file deve contenere un array');
+        for (const item of data) {
+          if (!item.id || !item.name || !item.date) {
+            throw new Error(`Viaggio non valido: mancano campi obbligatori (id, name, date)`);
+          }
+        }
+        if (!confirm(`Importare ${data.length} viaggi? I dati attuali verranno sovrascritti.`)) return;
+        trips.length = 0;
+        trips.push(...data);
+        saveTrips();
+        onDataChange();
+        renderAdminPanel(container, onDataChange);
+        showToast(container.querySelector('#admin-tab-content'), `${data.length} viaggi importati con successo`);
+      } catch (err) {
+        showToast(tabEl, `Errore importazione: ${err.message}`, true);
+      }
+    };
+    reader.readAsText(file);
+    fileInput.value = '';
+  });
+
+  tabEl.querySelector('#btn-reset').addEventListener('click', () => {
+    if (!confirm('Ripristinare i dati originali? I dati attuali verranno persi.')) return;
+    trips.length = 0;
+    trips.push(...structuredClone(defaultTrips));
+    saveTrips();
+    onDataChange();
+    renderAdminPanel(container, onDataChange);
+    showToast(container.querySelector('#admin-tab-content'), 'Dati ripristinati ai valori originali');
+  });
 
   tabEl.querySelector('.admin-trips__add').addEventListener('click', () => {
     showEditor(tabEl, null, onDataChange, container);

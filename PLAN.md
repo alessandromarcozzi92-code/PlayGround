@@ -500,14 +500,15 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 17 — Admin: esporta/importa dati
-**Obiettivo:** Permettere l'esportazione e l'importazione dei dati.
-**File coinvolti:** `js/admin.js`
-- Bottone "Esporta data.js": genera e scarica il file `data.js` con la sintassi ES module corretta, pronto da sostituire nel progetto
-- Bottone "Importa JSON": carica un file JSON, valida la struttura, e aggiorna i dati nel pannello
-- Feedback visivo: conferma esportazione, errori di validazione sull'import
+### Step 17 — Admin: esporta/importa dati (JSON)
+**Obiettivo:** Permettere backup, ripristino e trasferimento dei dati tra browser/dispositivi.
+**File coinvolti:** `js/admin.js`, `js/data.js`
+- Bottone "Esporta JSON": serializza `trips` e scarica un file `trips-backup-YYYY-MM-DD.json`
+- Bottone "Importa JSON": carica un file `.json`, valida la struttura (array, campi obbligatori `id`, `name`, `date`), conferma sovrascrittura, aggiorna localStorage tramite `saveTrips()`
+- Bottone "Reset ai default": ripristina i `defaultTrips` originali da `data.js` con conferma modale
+- Feedback visivo: toast di conferma per export/import/reset, errori di validazione sull'import
 
-**Verifica:** Esportare -> il file scaricato e' un `data.js` valido con `export const trips = [...]`. Importare il file esportato -> i dati si caricano correttamente nell'admin.
+**Verifica:** Esportare -> il file scaricato e' un `.json` valido con l'array trips. Importare il file appena esportato -> i dati si caricano correttamente. Reset -> tornano i 3 viaggi di default. Importare un file malformato -> errore chiaro, dati invariati.
 
 ---
 

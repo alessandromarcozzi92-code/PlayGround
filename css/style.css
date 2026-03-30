@@ -2736,6 +2736,78 @@ main {
   }
 }
 
+/* ---- Data management ---- */
+.admin-data {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border);
+}
+
+.admin-data__title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+}
+
+.admin-data__actions {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.admin-data__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: var(--bg);
+    border-color: var(--accent, var(--text-secondary));
+  }
+
+  &.admin-data__btn--danger {
+    color: #e63946;
+    border-color: rgba(230, 57, 70, 0.2);
+
+    &:hover {
+      background: rgba(230, 57, 70, 0.06);
+      border-color: rgba(230, 57, 70, 0.4);
+    }
+  }
+}
+
+/* ---- Toast ---- */
+.admin-toast {
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(42, 157, 95, 0.12);
+  color: #2a9d5f;
+  margin-bottom: var(--space-md);
+  animation: toast-in 0.25s ease-out;
+}
+
+.admin-toast--error {
+  background: rgba(230, 57, 70, 0.1);
+  color: #e63946;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ---- Editor ---- */
 .admin-editor__card {
   background: var(--surface);
