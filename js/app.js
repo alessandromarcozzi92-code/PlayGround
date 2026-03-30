@@ -479,6 +479,12 @@ function init() {
     .querySelector('.theme-toggle')
     .addEventListener('click', toggleTheme);
 
+  document.querySelector('[data-skip-link]').addEventListener('click', (e) => {
+    e.preventDefault();
+    mainContent.focus();
+    mainContent.scrollIntoView({ behavior: 'smooth' });
+  });
+
   window.addEventListener('hashchange', route);
 
   /* First load: render directly without transition */

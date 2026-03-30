@@ -500,7 +500,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 17 — Admin: esporta/importa dati (JSON)
+### Step 17 — [DONE] Admin: esporta/importa dati (JSON)
 **Obiettivo:** Permettere backup, ripristino e trasferimento dei dati tra browser/dispositivi.
 **File coinvolti:** `js/admin.js`, `js/data.js`
 - Bottone "Esporta JSON": serializza `trips` e scarica un file `trips-backup-YYYY-MM-DD.json`
@@ -512,7 +512,7 @@ Ogni step dipende dal completamento del precedente. Alla fine di ogni step il si
 
 ---
 
-### Step 18 — Accessibilita (a11y)
+### Step 18 — [DONE] Accessibilita (a11y)
 **Obiettivo:** Rendere il sito accessibile e navigabile da tastiera.
 **File coinvolti:** tutti
 - `aria-label` su tutti i controlli interattivi (toggle tema, hamburger, lightbox, filtri)

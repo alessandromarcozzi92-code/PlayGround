@@ -89,6 +89,38 @@ a {
   text-decoration: none;
 }
 
+/* ===== Skip Link (a11y) ===== */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: var(--space-md);
+  z-index: 9999;
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  border-radius: var(--border-radius);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: var(--space-sm);
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
+}
+
+/* ===== Global Focus Outline (a11y) ===== */
+:focus-visible {
+  outline: 2px solid var(--trip-color, var(--text-primary));
+  outline-offset: 2px;
+}
+
+/* Reset focus for mouse users — only show on keyboard */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* ===== Top Bar ===== */
 .topbar {
   position: fixed;

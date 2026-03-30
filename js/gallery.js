@@ -207,6 +207,9 @@ let lightboxPhotos = [];
 /** @type {number} Currently displayed photo index */
 let lightboxIndex = 0;
 
+/** @type {HTMLElement|null} Element that had focus before lightbox opened */
+let previousFocusEl = null;
+
 /**
  * Creates the lightbox DOM structure once and appends it to <body>.
  *
@@ -281,6 +284,8 @@ const updateLightboxContent = () => {
  * @param {number}   index  - The index of the photo to display first.
  */
 export const openLightbox = (photos, index) => {
+  previousFocusEl = document.activeElement;
+
   if (!lightboxEl) lightboxEl = createLightbox();
 
   if (!lightboxEl.parentNode) {
@@ -316,6 +321,11 @@ const closeLightbox = () => {
       lightboxEl.remove();
     }
   }, { once: true });
+
+  if (previousFocusEl) {
+    previousFocusEl.focus();
+    previousFocusEl = null;
+  }
 };
 
 /**

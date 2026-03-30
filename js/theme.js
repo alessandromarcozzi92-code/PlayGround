@@ -19,6 +19,10 @@ const applyTheme = (theme) => {
   if (icon) {
     icon.textContent = theme === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
   }
+  const toggle = document.querySelector('.theme-toggle');
+  if (toggle) {
+    toggle.setAttribute('aria-label', theme === 'dark' ? 'Passa al tema chiaro' : 'Passa al tema scuro');
+  }
 };
 
 /**

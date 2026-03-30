@@ -40,6 +40,8 @@ const buildBottomNav = () => {
 
     if (item.hasSubmenu) {
       btn.classList.add('bottomnav__item--has-submenu');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-controls', 'trips-panel');
       btn.addEventListener('mouseenter', openTripsPanel);
       btn.addEventListener('mouseleave', () => {
         setTimeout(() => {
@@ -55,8 +57,11 @@ const buildBottomNav = () => {
 
   tripsPanel = document.createElement('div');
   tripsPanel.className = 'trips-panel';
+  tripsPanel.id = 'trips-panel';
+  tripsPanel.setAttribute('role', 'menu');
+  tripsPanel.setAttribute('aria-label', 'Lista viaggi');
   tripsPanel.innerHTML = trips.filter(t => t.published).map(trip => `
-    <a href="#trip/${trip.id}" class="trips-panel__link">
+    <a href="#trip/${trip.id}" class="trips-panel__link" role="menuitem">
       <span class="trips-panel__dot" style="background-color: ${trip.color}"></span>
       ${trip.name}
     </a>
@@ -131,6 +136,7 @@ const setActiveNav = (id) => {
  */
 const openTripsPanel = () => {
   tripsPanel?.classList.add('trips-panel--open');
+  updateTripsExpanded(true);
   setActiveNav('trips');
 };
 
@@ -139,6 +145,7 @@ const openTripsPanel = () => {
  */
 const toggleTripsPanel = () => {
   const isOpen = tripsPanel?.classList.toggle('trips-panel--open');
+  updateTripsExpanded(!!isOpen);
   if (isOpen) setActiveNav('trips');
 };
 
@@ -147,6 +154,16 @@ const toggleTripsPanel = () => {
  */
 const closeTripsPanel = () => {
   tripsPanel?.classList.remove('trips-panel--open');
+  updateTripsExpanded(false);
+};
+
+/**
+ * Syncs the aria-expanded attribute on the trips toggle button.
+ *
+ * @param {boolean} expanded - Whether the panel is open.
+ */
+const updateTripsExpanded = (expanded) => {
+  nav?.querySelector('[data-nav="trips"]')?.setAttribute('aria-expanded', String(expanded));
 };
 
 /**

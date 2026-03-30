@@ -260,7 +260,7 @@ export const renderSearchView = (container) => {
           </button>
         </div>
       </div>
-      <div class="search-view__results"></div>
+      <div class="search-view__results" aria-live="polite" aria-atomic="false"></div>
       <div class="search-view__suggestions">
         <p class="search-view__suggestions-label">Prova a cercare</p>
         <div class="search-view__suggestions-list">
