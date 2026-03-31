@@ -134,7 +134,7 @@
 .admin-panel {
   padding: var(--space-xl) var(--space-lg);
   max-width: 940px;
-  margin: 0 auto;
+  margin: var(--space-xl) auto;
   padding-bottom: 6rem;
   animation: adminFadeIn 0.4s ease-out;
 }
