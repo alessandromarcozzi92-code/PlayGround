@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Split `style.css` (4125 lines) into 11 thematic CSS modules loaded via `@import`: reset, tokens, layout, hero, components, pages, gallery, lightbox, search, admin, responsive (Step A1).
+- `style.css` is now an index file with only `@import` statements.
+
 ### Added
 - Favicon (SVG emoji camera icon) and Apple touch icon (Step 19).
 - SEO meta tags: `<meta name="description">`, `<meta name="author">`, Open Graph tags (`og:type`, `og:title`, `og:description`, `og:site_name`, `og:locale`) (Step 19).

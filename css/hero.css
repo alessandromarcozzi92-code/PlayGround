@@ -1,0 +1,222 @@
+/* ===== Hero Section ===== */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero__slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  will-change: opacity;
+}
+
+.hero__slide--active {
+  opacity: 1;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.1) 40%,
+    rgba(0, 0, 0, 0.5) 80%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  padding: var(--space-lg);
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, var(--font-size-3xl));
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero__subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 3vw, var(--font-size-lg));
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: var(--space-sm);
+  opacity: 0.85;
+}
+
+.hero__cta {
+  position: absolute;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+  animation: hero-cta-bounce 2s ease-in-out infinite;
+
+  &:hover {
+    border-color: #fff;
+    transform: translateX(-50%) scale(1.1);
+    animation: none;
+  }
+}
+
+@keyframes hero-cta-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ===== Hero Stats ===== */
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+.hero-stats__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.hero-stats__number {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, var(--font-size-2xl));
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hero-stats__label {
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+/* ===== Trip Hero (single trip page) ===== */
+.trip-hero {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  min-height: 400px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.trip-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+@media (max-width: 768px) {
+  .trip-hero__bg {
+    background-attachment: scroll;
+  }
+}
+
+.trip-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.1) 40%,
+    rgba(0, 0, 0, 0.6) 80%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+.trip-hero__back {
+  position: absolute;
+  top: calc(var(--topbar-height) + var(--space-md));
+  left: var(--space-lg);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.trip-hero__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+  padding: var(--space-2xl) var(--space-lg);
+  max-width: 700px;
+}
+
+.trip-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, var(--font-size-3xl));
+  font-weight: 700;
+  line-height: 1.1;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  color: var(--trip-color);
+}
+
+.trip-hero__description {
+  font-size: var(--font-size-lg);
+  margin-top: var(--space-sm);
+  opacity: 0.9;
+}
+
+.trip-hero__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  font-size: var(--font-size-sm);
+  opacity: 0.7;
+}

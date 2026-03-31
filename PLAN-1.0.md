@@ -14,13 +14,15 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 
 ## Area A — Grafica e Design
 
-### Step A1 — Splitting CSS in moduli tematici
+### Step A1 — [DONE] Splitting CSS in moduli tematici
 **Obiettivo:** Suddividere `style.css` (4125 righe) in file CSS modulari importati via `@import`, migliorando manutenibilita' senza richiedere un bundler.
 **File coinvolti:** `css/style.css` (da suddividere), nuovi: `css/reset.css`, `css/tokens.css`, `css/layout.css`, `css/components.css`, `css/hero.css`, `css/gallery.css`, `css/lightbox.css`, `css/search.css`, `css/admin.css`, `css/responsive.css`, `index.html`
 - Estrarre le sezioni logiche gia' delimitate dai commenti `/* ===== ... ===== */`
 - `css/style.css` diventa un file indice con solo `@import` ordinati
 - Reset + tokens + base in testa, responsive in coda
 - Nessun cambio funzionale: il rendering deve essere identico
+
+**Nota implementazione:** Aggiunto `css/pages.css` (about teaser, about page, 404) per mantenere `components.css` sotto 500 righe. `admin.css` (1754 righe) resta sopra la soglia — verra' suddiviso nello step B1 insieme a `admin.js`.
 
 **Verifica:** Il sito appare identicamente a prima. Ogni file CSS e' sotto le 500 righe. `@import` funziona nativamente nel browser. DevTools mostra i file sorgente separati.
 

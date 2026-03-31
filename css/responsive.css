@@ -1,0 +1,267 @@
+/* ===== Responsive: mobile ===== */
+@media (max-width: 768px) {
+  :root {
+    --font-size-2xl: 2.5rem;
+    --font-size-3xl: 3.5rem;
+  }
+
+  .bottomnav {
+    bottom: 16px;
+    gap: 2px;
+    padding: 6px;
+  }
+
+  .bottomnav__item {
+    padding: 12px;
+
+    & svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .trip-card {
+    width: 100%;
+  }
+
+  .gallery-header {
+    padding: var(--space-md);
+
+    .gallery-header__title {
+      font-size: var(--font-size-xl);
+    }
+  }
+
+  .gallery-grid {
+    padding: 0 var(--space-md);
+  }
+
+  .gallery-item {
+    flex: 1 1 100%;
+  }
+
+  .featured-trip {
+    padding: var(--space-2xl) var(--space-md) var(--space-xl);
+  }
+
+  .featured-trip__content {
+    flex-direction: column;
+  }
+
+  .featured-trip__image-wrapper {
+    min-height: 240px;
+  }
+
+  .moments {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .moments__item {
+    flex: 0 0 220px;
+    height: 160px;
+  }
+
+  .trips-section {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .about-teaser {
+    padding: var(--space-xl) var(--space-md) var(--space-2xl);
+  }
+
+  .about-teaser__content {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+  }
+
+  .hero-stats {
+    gap: var(--space-lg);
+  }
+
+  .site-footer__content {
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--space-md) var(--space-md);
+  }
+
+  .site-footer__col--brand {
+    flex: 1;
+  }
+
+  .site-footer__tagline {
+    max-width: none;
+  }
+
+  .site-footer__bottom {
+    padding: var(--space-md) var(--space-md) var(--space-xs);
+  }
+
+  .search-view {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+
+  .search-view__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .search-result--photo {
+    flex: 0 0 100%;
+  }
+
+  .about {
+    padding: var(--space-2xl) var(--space-md) var(--space-xl);
+  }
+
+  .about__name {
+    font-size: var(--font-size-xl);
+  }
+
+  .about__stats {
+    gap: var(--space-xl);
+  }
+
+  .about__stat-value {
+    font-size: var(--font-size-xl);
+  }
+
+  .about__socials {
+    flex-direction: column;
+  }
+}
+
+/* ===== Responsive: small mobile (375px and below) ===== */
+@media (max-width: 375px) {
+  :root {
+    --font-size-2xl: 2rem;
+    --font-size-3xl: 2.8rem;
+  }
+
+  .hero {
+    min-height: 500px;
+  }
+
+  .hero-stats {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .featured-trip__image-wrapper {
+    min-height: 180px;
+  }
+
+  .featured-trip__name {
+    font-size: 1.5rem;
+  }
+
+  .moments__item {
+    flex: 0 0 180px;
+    height: 130px;
+  }
+
+  .trip-card {
+    width: 100%;
+  }
+
+  .trip-card__image-wrapper {
+    height: 180px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lightbox__btn--prev,
+  .lightbox__btn--next {
+    padding: var(--space-sm);
+  }
+
+  .about__avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .site-footer__content {
+    padding: var(--space-lg) var(--space-sm) var(--space-sm);
+  }
+
+  .search-view__input {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* ===== Responsive: widescreen (1440px and above) ===== */
+@media (min-width: 1440px) {
+  :root {
+    --max-width: 1360px;
+  }
+
+  .hero__title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .featured-trip__content {
+    gap: var(--space-2xl);
+  }
+
+  .featured-trip__image-wrapper {
+    min-height: 440px;
+  }
+
+  .moments__item {
+    flex: 0 0 340px;
+    height: 240px;
+  }
+
+  .trip-card {
+    width: 380px;
+  }
+
+  .trip-card__image-wrapper {
+    height: 260px;
+  }
+
+  .split-section {
+    gap: var(--space-3xl);
+  }
+
+  .gallery-item {
+    flex: 1 1 calc(25% - var(--space-md));
+  }
+}
+
+/* ===== Responsive: desktop — vertical sidebar left ===== */
+@media (min-width: 1024px) {
+  .bottomnav {
+    bottom: auto;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-direction: column;
+    border-radius: 28px;
+  }
+
+  .bottomnav__item:hover {
+    transform: translateX(15px) scale(1.7);
+  }
+
+  .trips-panel {
+    bottom: auto;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) scale(0.92);
+  }
+
+  .trips-panel--open {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .topbar {
+    left: 90px;
+  }
+}
