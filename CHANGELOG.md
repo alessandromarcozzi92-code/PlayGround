@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Split `admin.js` (1152 lines) into 7 sub-modules under `js/admin/`: `index.js` (orchestrator), `helpers.js` (shared utilities, icons, trip picker), `dashboard.js` (stats, trip list, trip editor, data management), `section-editor.js`, `photo-organizer.js`, `poi-editor.js`, `tag-manager.js` (Step B1).
+- `app.js` now imports from `js/admin/index.js` instead of `js/admin.js`.
 - Split `style.css` (4125 lines) into 11 thematic CSS modules loaded via `@import`: reset, tokens, layout, hero, components, pages, gallery, lightbox, search, admin, responsive (Step A1).
 - `style.css` is now an index file with only `@import` statements.
 
