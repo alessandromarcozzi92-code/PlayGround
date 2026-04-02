@@ -7,7 +7,7 @@ import { renderStats } from './stats.js';
 import { destroyMap } from './map.js';
 import { renderSearchView } from './search.js';
 import { isAuthenticated, renderLoginForm } from './auth.js';
-import { renderAdminPanel } from './admin.js';
+import { renderAdminPanel } from './admin/index.js';
 
 const BASE_TITLE = 'Surprise — Travel Photography';
 

@@ -106,13 +106,15 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 
 ## Area B — Implementazione e Architettura
 
-### Step B1 — Splitting admin.js in sotto-moduli
+### Step B1 — [DONE] Splitting admin.js in sotto-moduli
 **Obiettivo:** Suddividere `admin.js` (1152 righe) in moduli separati per responsabilita'.
 **File coinvolti:** `js/admin.js` (da suddividere), nuovi: `js/admin/dashboard.js`, `js/admin/trip-editor.js`, `js/admin/section-editor.js`, `js/admin/photo-organizer.js`, `js/admin/poi-editor.js`, `js/admin/tag-manager.js`, `js/admin/data-manager.js`, `js/admin/index.js`, `js/admin/helpers.js`
 - `js/admin/index.js`: orchestratore, gestisce tab switching, esporta `renderAdminPanel`
 - Ogni sotto-modulo esporta la funzione di rendering del proprio tab
 - Helpers condivisi (`escAttr`, `showToast`, `getAllTags`, `nameToId`, `POI_ICONS`) in `js/admin/helpers.js`
 - Aggiornare `app.js` per importare da `js/admin/index.js`
+
+**Nota implementazione:** `dashboard.js` (310 righe) supera di poco le 300 righe perche' include il trip editor inline — separarlo ulteriormente creerebbe accoppiamento artificioso. `bindTripPicker` in `helpers.js` ora riceve `selectedTrip` e `trips` come parametri espliciti anziche' riferire variabili di modulo, rendendo le dipendenze piu' chiare.
 
 **Verifica:** Admin funziona identicamente. Tutti i tab funzionano. Nessun file supera le 300 righe. `admin.js` originale non esiste piu'.
 
