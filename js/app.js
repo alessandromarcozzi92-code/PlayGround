@@ -8,6 +8,7 @@ import { destroyMap } from './map.js';
 import { renderSearchView } from './search.js';
 import { isAuthenticated, renderLoginForm } from './auth.js';
 import { renderAdminPanel } from './admin/index.js';
+import { escapeHtml, escapeAttr, sanitizeMediaUrl } from './utils/sanitize.js';
 
 const BASE_TITLE = 'Surprise — Travel Photography';
 
@@ -114,15 +115,15 @@ const renderLatestTrip = (container) => {
     <div class="featured-trip__label">Ultimo viaggio</div>
     <div class="featured-trip__content">
       <a href="#trip/${trip.id}" class="featured-trip__image-wrapper">
-        <img src="${trip.heroImage || trip.cover}" alt="${trip.name}" class="featured-trip__image" loading="lazy">
+        <img src="${sanitizeMediaUrl(trip.heroImage || trip.cover)}" alt="${escapeAttr(trip.name)}" class="featured-trip__image" loading="lazy">
         <div class="featured-trip__image-overlay"></div>
       </a>
       <div class="featured-trip__info">
         <time class="featured-trip__date">${dateStr}</time>
-        <h2 class="featured-trip__name">${trip.name}</h2>
-        <p class="featured-trip__description">${trip.description}</p>
+        <h2 class="featured-trip__name">${escapeHtml(trip.name)}</h2>
+        <p class="featured-trip__description">${escapeHtml(trip.description)}</p>
         <div class="featured-trip__tags">
-          ${trip.tags.map(tag => `<span class="featured-trip__tag">${tag}</span>`).join('')}
+          ${trip.tags.map(tag => `<span class="featured-trip__tag">${escapeHtml(tag)}</span>`).join('')}
         </div>
         <a href="#trip/${trip.id}" class="featured-trip__cta">
           Scopri il viaggio
@@ -162,9 +163,9 @@ const renderMomentsStrip = (container) => {
     <div class="moments__strip">
       ${moments.map(m => `
         <a href="#trip/${m.tripId}" class="moments__item">
-          <img src="${m.src}" alt="${m.caption}" class="moments__image" loading="lazy">
+          <img src="${sanitizeMediaUrl(m.src)}" alt="${escapeAttr(m.caption)}" class="moments__image" loading="lazy">
           <div class="moments__overlay">
-            <span class="moments__trip-name" style="--dot-color: ${m.tripColor}">${m.tripName}</span>
+            <span class="moments__trip-name" style="--dot-color: ${escapeAttr(m.tripColor)}">${escapeHtml(m.tripName)}</span>
           </div>
         </a>
       `).join('')}
@@ -337,7 +338,7 @@ function renderLanding() {
   hero.innerHTML = `
     <div class="hero__slides">
       ${heroImages.map((src, i) => `
-        <div class="hero__slide ${i === 0 ? 'hero__slide--active' : ''}" style="background-image: url('${src}')"></div>
+        <div class="hero__slide ${i === 0 ? 'hero__slide--active' : ''}" style="background-image: url('${sanitizeMediaUrl(src)}')"></div>
       `).join('')}
     </div>
     <div class="hero__overlay"></div>
@@ -458,8 +459,8 @@ function populateFooterTrips() {
   list.innerHTML = recent.map(trip => `
     <li>
       <a href="#trip/${trip.id}" class="site-footer__link">
-        <span class="site-footer__link-dot" style="background: ${trip.color}"></span>
-        ${trip.name}
+        <span class="site-footer__link-dot" style="background: ${escapeAttr(trip.color)}"></span>
+        ${escapeHtml(trip.name)}
       </a>
     </li>
   `).join('');

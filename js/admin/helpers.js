@@ -4,6 +4,8 @@
  * @module admin/helpers
  */
 
+import { escapeAttr } from '../utils/sanitize.js';
+
 /* ─── Utility functions ─── */
 
 /**
@@ -32,11 +34,13 @@ const nameToId = (name) =>
 
 /**
  * Escapes a string for safe use inside HTML attributes.
+ * Delegates to the shared escapeAttr from utils/sanitize.js which covers
+ * all five dangerous characters (&, <, >, ", ').
  *
  * @param {string} str - The string to escape.
  * @returns {string} Escaped string.
  */
-const escAttr = (str) => String(str ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const escAttr = (str) => escapeAttr(str);
 
 /** Available POI icon categories */
 const POI_ICONS = ['temple', 'city', 'nature', 'food', 'beach', 'hotel', 'museum', 'default'];

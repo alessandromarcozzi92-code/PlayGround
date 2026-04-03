@@ -1,4 +1,5 @@
 import { renderMap } from './map.js';
+import { escapeHtml, escapeAttr, sanitizeMediaUrl } from './utils/sanitize.js';
 
 const MONTH_LABELS = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
@@ -30,17 +31,17 @@ export const renderTripCards = (container, tripsList) => {
     card.innerHTML = `
       <a href="#trip/${trip.id}" class="trip-card__link">
         <div class="trip-card__image-wrapper">
-          <img src="${trip.cover}" alt="${trip.name}" class="trip-card__image" loading="lazy"
+          <img src="${sanitizeMediaUrl(trip.cover)}" alt="${escapeAttr(trip.name)}" class="trip-card__image" loading="lazy"
                onerror="this.style.display='none';this.parentElement.classList.add('trip-card__image-wrapper--broken')">
           <div class="trip-card__overlay">
-            <h2 class="trip-card__name">${trip.name}</h2>
+            <h2 class="trip-card__name">${escapeHtml(trip.name)}</h2>
             <time class="trip-card__date">${formatDate(trip.date)}</time>
           </div>
         </div>
         <div class="trip-card__info">
-          <p class="trip-card__description">${trip.description}</p>
+          <p class="trip-card__description">${escapeHtml(trip.description)}</p>
           <div class="trip-card__tags">
-            ${trip.tags.map(tag => `<span class="trip-card__tag">${tag}</span>`).join('')}
+            ${trip.tags.map(tag => `<span class="trip-card__tag">${escapeHtml(tag)}</span>`).join('')}
           </div>
         </div>
       </a>
@@ -67,7 +68,7 @@ export const renderTripGallery = (container, trip) => {
   const hero = document.createElement('section');
   hero.className = 'trip-hero';
   hero.innerHTML = `
-    <div class="trip-hero__bg" style="background-image: url('${heroSrc}')"></div>
+    <div class="trip-hero__bg" style="background-image: url('${sanitizeMediaUrl(heroSrc)}')"></div>
     <div class="trip-hero__overlay"></div>
     <a href="#" class="trip-hero__back" aria-label="Torna ai viaggi">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -78,8 +79,8 @@ export const renderTripGallery = (container, trip) => {
       <span>Tutti i viaggi</span>
     </a>
     <div class="trip-hero__content">
-      <h1 class="trip-hero__title">${trip.name}</h1>
-      <p class="trip-hero__description">${trip.description}</p>
+      <h1 class="trip-hero__title">${escapeHtml(trip.name)}</h1>
+      <p class="trip-hero__description">${escapeHtml(trip.description)}</p>
       <div class="trip-hero__meta">
         <time>${formatDate(trip.date)}</time>
         <span>&middot;</span>
@@ -99,20 +100,20 @@ export const renderTripGallery = (container, trip) => {
       el.className = `split-section split-section--${section.type}`;
 
       const mediaHTML = section.media.type === 'video'
-        ? `<video class="split-section__video" poster="${section.media.poster || ''}" controls preload="none" loading="lazy">
-             <source src="${section.media.src}" type="video/mp4">
+        ? `<video class="split-section__video" poster="${sanitizeMediaUrl(section.media.poster || '')}" controls preload="none" loading="lazy">
+             <source src="${sanitizeMediaUrl(section.media.src)}" type="video/mp4">
            </video>`
-        : `<img src="${section.media.src}" alt="${section.media.caption || section.title}" class="split-section__image" loading="lazy"
+        : `<img src="${sanitizeMediaUrl(section.media.src)}" alt="${escapeAttr(section.media.caption || section.title)}" class="split-section__image" loading="lazy"
                onerror="this.style.display='none';this.parentElement.classList.add('split-section__media--broken')">`;
 
       el.innerHTML = `
         <div class="split-section__media">
           ${mediaHTML}
-          ${section.media.caption ? `<p class="split-section__caption">${section.media.caption}</p>` : ''}
+          ${section.media.caption ? `<p class="split-section__caption">${escapeHtml(section.media.caption)}</p>` : ''}
         </div>
         <div class="split-section__text">
-          <h2 class="split-section__title">${section.title}</h2>
-          <p class="split-section__body">${section.text}</p>
+          <h2 class="split-section__title">${escapeHtml(section.title)}</h2>
+          <p class="split-section__body">${escapeHtml(section.text)}</p>
         </div>
       `;
 
@@ -139,11 +140,11 @@ export const renderTripGallery = (container, trip) => {
     item.dataset.index = index;
     item.setAttribute('tabindex', '0');
     item.setAttribute('role', 'button');
-    item.setAttribute('aria-label', `Apri foto: ${photo.caption}`);
+    item.setAttribute('aria-label', `Apri foto: ${escapeAttr(photo.caption)}`);
     item.innerHTML = `
-      <img src="${photo.src}" alt="${photo.caption}" class="gallery-item__image" loading="lazy"
+      <img src="${sanitizeMediaUrl(photo.src)}" alt="${escapeAttr(photo.caption)}" class="gallery-item__image" loading="lazy"
            onerror="this.style.display='none';this.parentElement.classList.add('gallery-item--broken')">
-      <figcaption class="gallery-item__caption">${photo.caption}</figcaption>
+      <figcaption class="gallery-item__caption">${escapeHtml(photo.caption)}</figcaption>
     `;
     grid.appendChild(item);
   });

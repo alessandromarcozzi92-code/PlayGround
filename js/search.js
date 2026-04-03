@@ -1,5 +1,6 @@
 import { trips } from './data.js';
 import { openLightbox } from './gallery.js';
+import { escapeHtml, escapeAttr, sanitizeMediaUrl } from './utils/sanitize.js';
 
 const DEBOUNCE_MS = 300;
 const SUGGESTIONS = ['Giappone', 'aurora', 'tempio', 'deserto', 'natura', 'cascata'];
@@ -16,13 +17,17 @@ let debounceTimer = null;
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /**
- * Wraps matched substrings in <mark> tags for visual highlighting.
+ * Escapes HTML first, then wraps matched substrings in <mark> tags.
+ * This prevents XSS while still highlighting search terms.
  *
- * @param {string} text    - The source text.
+ * @param {string} text    - The raw (unescaped) source text.
  * @param {RegExp} pattern - The regex pattern to highlight.
- * @returns {string} HTML string with matches wrapped in <mark>.
+ * @returns {string} HTML-safe string with matches wrapped in <mark>.
  */
-const highlight = (text, pattern) => text.replace(pattern, '<mark class="search-highlight">$&</mark>');
+const highlight = (text, pattern) => {
+  const safe = escapeHtml(text);
+  return safe.replace(pattern, '<mark class="search-highlight">$&</mark>');
+};
 
 /**
  * Truncates text around the first match, returning a snippet with context.
@@ -151,7 +156,7 @@ const renderResults = (container, query, results) => {
       <div class="search-group__list">
         ${results.trips.map(({ trip }) => `
           <a href="#trip/${trip.id}" class="search-result search-result--trip">
-            <img src="${trip.cover}" alt="${trip.name}" class="search-result__thumb" loading="lazy"
+            <img src="${sanitizeMediaUrl(trip.cover)}" alt="${escapeAttr(trip.name)}" class="search-result__thumb" loading="lazy"
                  onerror="this.style.display='none'">
             <div class="search-result__info">
               <span class="search-result__name">${highlight(trip.name, pattern)}</span>
@@ -176,11 +181,11 @@ const renderResults = (container, query, results) => {
           <button class="search-result search-result--photo"
                   data-trip-id="${trip.id}" data-photo-index="${index}"
                   type="button">
-            <img src="${photo.src}" alt="${photo.caption}" class="search-result__photo-thumb" loading="lazy"
+            <img src="${sanitizeMediaUrl(photo.src)}" alt="${escapeAttr(photo.caption)}" class="search-result__photo-thumb" loading="lazy"
                  onerror="this.style.display='none';this.parentElement.classList.add('search-result--broken')">
             <div class="search-result__photo-info">
               <span class="search-result__photo-caption">${highlight(photo.caption, pattern)}</span>
-              <span class="search-result__photo-trip" style="--dot-color: ${trip.color}">${trip.name}</span>
+              <span class="search-result__photo-trip" style="--dot-color: ${escapeAttr(trip.color)}">${escapeHtml(trip.name)}</span>
             </div>
           </button>
         `).join('')}
@@ -197,7 +202,7 @@ const renderResults = (container, query, results) => {
           <a href="#trip/${trip.id}" class="search-result search-result--section">
             <div class="search-result__info">
               <span class="search-result__section-badge ${isPoi ? 'search-result__section-badge--poi' : ''}">
-                ${isPoi ? 'POI' : 'Sezione'} &middot; ${trip.name}
+                ${isPoi ? 'POI' : 'Sezione'} &middot; ${escapeHtml(trip.name)}
               </span>
               <span class="search-result__name">${highlight(section.title, pattern)}</span>
               ${textMatch && section.text
@@ -224,15 +229,7 @@ const renderResults = (container, query, results) => {
   });
 };
 
-/**
- * Escapes HTML special characters to prevent XSS in rendered output.
- *
- * @param {string} str - The raw string.
- * @returns {string} HTML-safe string.
- */
-const escapeHtml = (str) => str.replace(/[&<>"']/g, (c) => ({
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-})[c]);
+/* escapeHtml is now imported from utils/sanitize.js */
 
 /**
  * Renders the full search view into the given container.

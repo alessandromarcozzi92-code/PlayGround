@@ -120,13 +120,15 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 
 ---
 
-### Step B2 — Sanitizzazione HTML e protezione XSS completa
+### Step B2 — [DONE] Sanitizzazione HTML e protezione XSS completa
 **Obiettivo:** Sostituire l'uso diretto di `innerHTML` con template sicuri, sanitizzando tutti i dati utente.
 **File coinvolti:** tutti i file JS che usano `innerHTML`, nuovo `js/utils/sanitize.js`
 - Funzione `escapeHtml(str)` che escapa `<`, `>`, `"`, `'`, `&`
 - Applicare a tutti i dati utente interpolati in template HTML (caption, nomi, descrizioni, testi, note POI, tag)
 - Validare URL immagini: accettare solo `https://`, percorsi relativi, `data:image/*` — rifiutare `javascript:`, `data:text/html`
 - I dati vengono sanitizzati al rendering, non al salvataggio
+
+**Nota implementazione:** Creato `js/utils/sanitize.js` con 4 funzioni esportate (`escapeHtml`, `escapeAttr`, `isValidMediaUrl`, `sanitizeMediaUrl`). Sanitizzati 6 file pubblici (`gallery.js`, `app.js`, `search.js`, `menu.js`, `map.js`) e aggiornato `admin/helpers.js` per delegare `escAttr` al modulo condiviso (ora copre tutti e 5 i caratteri pericolosi). `highlight()` in `search.js` riscritta per escapare HTML prima di applicare `<mark>`. Aggiunta validazione URL all'import JSON nel dashboard admin.
 
 **Verifica:** Creare viaggio con nome `<script>alert('xss')</script>` -> il nome appare come testo, nessun script eseguito. URL `javascript:` rifiutato. HTML nei campi caption non produce rendering HTML nel sito pubblico.
 

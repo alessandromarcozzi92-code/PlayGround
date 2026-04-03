@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- `js/utils/sanitize.js` module with `escapeHtml`, `escapeAttr`, `isValidMediaUrl`, and `sanitizeMediaUrl` utilities for XSS prevention (Step B2).
+- URL validation on JSON import in admin dashboard — rejects `javascript:`, `data:text/html`, and other dangerous URL schemes (Step B2).
+
 ### Changed
+- All user-supplied data (trip names, descriptions, tags, captions, POI names/notes) is now HTML-escaped before `innerHTML` interpolation across `gallery.js`, `app.js`, `search.js`, `menu.js`, and `map.js` (Step B2).
+- All image/media URLs are sanitized via `sanitizeMediaUrl()` before rendering in `src` attributes and CSS `background-image` (Step B2).
+- `search.js` `highlight()` function now escapes HTML before wrapping matches in `<mark>` tags, preventing stored XSS via search results (Step B2).
+- `admin/helpers.js` `escAttr()` now delegates to the shared `escapeAttr()` which covers all five dangerous characters (`&`, `<`, `>`, `"`, `'`) instead of only two (Step B2).
 - Split `admin.js` (1152 lines) into 7 sub-modules under `js/admin/`: `index.js` (orchestrator), `helpers.js` (shared utilities, icons, trip picker), `dashboard.js` (stats, trip list, trip editor, data management), `section-editor.js`, `photo-organizer.js`, `poi-editor.js`, `tag-manager.js` (Step B1).
 - `app.js` now imports from `js/admin/index.js` instead of `js/admin.js`.
 - Split `style.css` (4125 lines) into 11 thematic CSS modules loaded via `@import`: reset, tokens, layout, hero, components, pages, gallery, lightbox, search, admin, responsive (Step A1).

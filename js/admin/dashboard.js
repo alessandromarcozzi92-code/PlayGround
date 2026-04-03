@@ -6,6 +6,7 @@
 
 import { trips, saveTrips, defaultTrips } from '../data.js';
 import { escAttr, nameToId, svg, showToast, getAllTags } from './helpers.js';
+import { isValidMediaUrl } from '../utils/sanitize.js';
 
 /** Currently edited trip id (null = new trip form) */
 let editingTripId = null;
@@ -246,6 +247,16 @@ const renderDashboardTab = (tabEl, container, onDataChange, renderPanel) => {
         for (const item of data) {
           if (!item.id || !item.name || !item.date) {
             throw new Error(`Viaggio non valido: mancano campi obbligatori (id, name, date)`);
+          }
+
+          /* Validate media URLs to block javascript: and dangerous schemes */
+          const urlFields = [item.cover, item.heroImage].filter(Boolean);
+          item.photos?.forEach(p => { if (p.src) urlFields.push(p.src); });
+          item.sections?.forEach(s => { if (s.media?.src) urlFields.push(s.media.src); });
+
+          const badUrl = urlFields.find(u => !isValidMediaUrl(u));
+          if (badUrl) {
+            throw new Error(`URL non valido o pericoloso in "${item.name}": ${badUrl}`);
           }
         }
         if (!confirm(`Importare ${data.length} viaggi? I dati attuali verranno sovrascritti.`)) return;
