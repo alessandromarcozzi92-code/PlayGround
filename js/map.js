@@ -1,4 +1,5 @@
 /* global L */
+import { escapeHtml } from './utils/sanitize.js';
 
 const TILE_LIGHT = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 const TILE_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
@@ -61,8 +62,8 @@ const createMarkerIcon = (category, tripColor) => {
  */
 const buildPopupContent = (poi) => `
   <div class="trip-map__popup">
-    <strong class="trip-map__popup-name">${poi.name}</strong>
-    ${poi.note ? `<p class="trip-map__popup-note">${poi.note}</p>` : ''}
+    <strong class="trip-map__popup-name">${escapeHtml(poi.name)}</strong>
+    ${poi.note ? `<p class="trip-map__popup-note">${escapeHtml(poi.note)}</p>` : ''}
   </div>
 `;
 

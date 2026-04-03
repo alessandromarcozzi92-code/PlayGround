@@ -1,4 +1,5 @@
 import { trips } from './data.js';
+import { escapeHtml, escapeAttr } from './utils/sanitize.js';
 
 const ICONS = {
   home: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
@@ -62,8 +63,8 @@ const buildBottomNav = () => {
   tripsPanel.setAttribute('aria-label', 'Lista viaggi');
   tripsPanel.innerHTML = trips.filter(t => t.published).map(trip => `
     <a href="#trip/${trip.id}" class="trips-panel__link" role="menuitem">
-      <span class="trips-panel__dot" style="background-color: ${trip.color}"></span>
-      ${trip.name}
+      <span class="trips-panel__dot" style="background-color: ${escapeAttr(trip.color)}"></span>
+      ${escapeHtml(trip.name)}
     </a>
   `).join('');
 
