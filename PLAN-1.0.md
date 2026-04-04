@@ -5,7 +5,8 @@
 Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing hash, pannello admin, mappa Leaflet, ricerca, tema dark/light, accessibilita'. Questo piano definisce i miglioramenti post-lancio, organizzati in 5 aree: Grafica, Implementazione, Sicurezza, Deploy, Funzionalita' aggiuntive.
 
 **Stato attuale:**
-- 11 moduli JS (~3300 righe), 1 file CSS (~4125 righe)
+
+- 11 moduli JS (~~3300 righe), 1 file CSS (~~4125 righe)
 - Nessun build process, nessun test, nessun deploy automatico
 - Admin con credenziali hash client-side (protezione cosmetica)
 - Dati in localStorage, sessione in sessionStorage
@@ -15,8 +16,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ## Area A — Grafica e Design
 
 ### Step A1 — [DONE] Splitting CSS in moduli tematici
+
 **Obiettivo:** Suddividere `style.css` (4125 righe) in file CSS modulari importati via `@import`, migliorando manutenibilita' senza richiedere un bundler.
 **File coinvolti:** `css/style.css` (da suddividere), nuovi: `css/reset.css`, `css/tokens.css`, `css/layout.css`, `css/components.css`, `css/hero.css`, `css/gallery.css`, `css/lightbox.css`, `css/search.css`, `css/admin.css`, `css/responsive.css`, `index.html`
+
 - Estrarre le sezioni logiche gia' delimitate dai commenti `/* ===== ... ===== */`
 - `css/style.css` diventa un file indice con solo `@import` ordinati
 - Reset + tokens + base in testa, responsive in coda
@@ -29,8 +32,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step A2 — [DONE] Aspect ratio e skeleton loading per le immagini
+
 **Obiettivo:** Eliminare il CLS (Cumulative Layout Shift) riservando lo spazio delle immagini prima del caricamento, e mostrare placeholder shimmer durante il loading.
 **File coinvolti:** `css/components.css`, `js/gallery.js`, `js/app.js`
+
 - Aggiungere `aspect-ratio: 4/3` ai wrapper delle immagini (trip card, galleria, hero)
 - Creare classe CSS `.skeleton` con animazione shimmer (gradient animato)
 - Su `load` dell'immagine, rimuovere la classe skeleton
@@ -43,8 +48,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step A3 — Hero slideshow migliorato con transizioni avanzate
+
 **Obiettivo:** Sostituire il fade basico dello slideshow hero con transizioni cinematiche (Ken Burns zoom + crossfade).
 **File coinvolti:** `js/app.js`, `css/hero.css`
+
 - Animazione Ken Burns (zoom lento + pan) su ogni slide attiva via CSS `@keyframes`
 - Crossfade con `opacity` + `transition` tra slide
 - Indicatori dot in basso per navigare tra slide
@@ -56,8 +63,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step A4 — Lightbox avanzato con zoom e gesture touch
+
 **Obiettivo:** Trasformare il lightbox in esperienza immersiva con zoom, swipe gesture su mobile e transizioni migliori.
 **File coinvolti:** `js/gallery.js`, `css/lightbox.css`
+
 - Zoom su doppio click/pinch (CSS `transform: scale()` + `transform-origin` al punto di click)
 - Swipe gesture su touch: swipe left/right per navigare (`touchstart`/`touchmove`/`touchend`)
 - Transizione entrata: la foto "si espande" dalla thumbnail (`getBoundingClientRect()` della thumbnail, animare verso il centro)
@@ -69,8 +78,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step A5 — Micro-interazioni e transizioni di pagina
+
 **Obiettivo:** Aggiungere feedback visivi sottili e transizioni di navigazione sofisticate.
 **File coinvolti:** `css/components.css`, `css/layout.css`, `js/app.js`, `js/gallery.js`
+
 - Trip card hover: parallax tilt leggero (CSS `perspective` + `transform: rotateX/Y` basato su posizione mouse)
 - Bottoni e link: effetto ripple on click (pseudo-elemento animato)
 - Transizione tra viste: slide direzionale (home scorre a sinistra entrando in un trip, trip scorre a destra tornando)
@@ -82,8 +93,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step A6 — Restyling footer e pagina About
+
 **Obiettivo:** Rendere il footer piu' visivamente interessante e arricchire la pagina About.
 **File coinvolti:** `css/layout.css`, `js/app.js`, `index.html`
+
 - Footer: mappa del mondo stilizzata (SVG inline) con punti colorati sui paesi visitati, animati all'entrata
 - Footer: gradiente animato nella banda decorativa superiore
 - About: layout narrativo con timeline dei viaggi (verticale, pallini colorati per viaggio)
@@ -95,8 +108,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step A7 — Progress bar di lettura e back-to-top
+
 **Obiettivo:** Aggiungere indicatore di progresso nella lettura e bottone per tornare in cima.
 **File coinvolti:** `js/app.js` (o nuovo `js/ui.js`), `css/components.css`
+
 - Barra di progresso sottile in cima (sotto topbar) che si riempie con lo scroll, colorata con `--trip-color`
 - Bottone "torna in cima" che appare dopo 300px di scroll, con animazione entrata/uscita
 - Smooth scroll nativo (`window.scrollTo({ top: 0, behavior: 'smooth' })`)
@@ -109,8 +124,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ## Area B — Implementazione e Architettura
 
 ### Step B1 — [DONE] Splitting admin.js in sotto-moduli
+
 **Obiettivo:** Suddividere `admin.js` (1152 righe) in moduli separati per responsabilita'.
 **File coinvolti:** `js/admin.js` (da suddividere), nuovi: `js/admin/dashboard.js`, `js/admin/trip-editor.js`, `js/admin/section-editor.js`, `js/admin/photo-organizer.js`, `js/admin/poi-editor.js`, `js/admin/tag-manager.js`, `js/admin/data-manager.js`, `js/admin/index.js`, `js/admin/helpers.js`
+
 - `js/admin/index.js`: orchestratore, gestisce tab switching, esporta `renderAdminPanel`
 - Ogni sotto-modulo esporta la funzione di rendering del proprio tab
 - Helpers condivisi (`escAttr`, `showToast`, `getAllTags`, `nameToId`, `POI_ICONS`) in `js/admin/helpers.js`
@@ -123,11 +140,13 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step B2 — [DONE] Sanitizzazione HTML e protezione XSS completa
+
 **Obiettivo:** Sostituire l'uso diretto di `innerHTML` con template sicuri, sanitizzando tutti i dati utente.
 **File coinvolti:** tutti i file JS che usano `innerHTML`, nuovo `js/utils/sanitize.js`
+
 - Funzione `escapeHtml(str)` che escapa `<`, `>`, `"`, `'`, `&`
 - Applicare a tutti i dati utente interpolati in template HTML (caption, nomi, descrizioni, testi, note POI, tag)
-- Validare URL immagini: accettare solo `https://`, percorsi relativi, `data:image/*` — rifiutare `javascript:`, `data:text/html`
+- Validare URL immagini: accettare solo `https://`, percorsi relativi, `data:image/`* — rifiutare `javascript:`, `data:text/html`
 - I dati vengono sanitizzati al rendering, non al salvataggio
 
 **Nota implementazione:** Creato `js/utils/sanitize.js` con 4 funzioni esportate (`escapeHtml`, `escapeAttr`, `isValidMediaUrl`, `sanitizeMediaUrl`). Sanitizzati 6 file pubblici (`gallery.js`, `app.js`, `search.js`, `menu.js`, `map.js`) e aggiornato `admin/helpers.js` per delegare `escAttr` al modulo condiviso (ora copre tutti e 5 i caratteri pericolosi). `highlight()` in `search.js` riscritta per escapare HTML prima di applicare `<mark>`. Aggiunta validazione URL all'import JSON nel dashboard admin.
@@ -137,8 +156,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step B3 — Gestione errori globale e feedback utente
+
 **Obiettivo:** Catturare eccezioni non gestite e mostrare feedback appropriato senza rompere il sito.
 **File coinvolti:** nuovo `js/utils/error-handler.js`, `js/app.js`, `css/components.css`
+
 - Listener `window.onerror` e `window.onunhandledrejection`
 - Toast/snackbar riutilizzabile anche nel sito pubblico (non solo admin)
 - Fallback graceful: se Leaflet non carica, mostrare "Mappa non disponibile" invece di errori
@@ -149,8 +170,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step B4 — Stato filtri nell'URL e deep linking
+
 **Obiettivo:** Persistere stato dei filtri nell'URL hash per link condivisibili.
 **File coinvolti:** `js/filters.js`, `js/app.js`
+
 - Codificare filtri come query parameters: `#?tag=asia&sort=recent`
 - Al caricamento, leggere parametri e applicare filtri
 - Aggiornare hash senza re-render completo (`history.replaceState`)
@@ -161,8 +184,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step B5 — Virtual scrolling per gallerie grandi
+
 **Obiettivo:** Rendering lazy delle foto per gallerie con molte immagini.
 **File coinvolti:** `js/gallery.js`, `css/gallery.css`
+
 - Per gallerie >20 foto: rendering iniziale di 12, poi caricamento progressivo con IntersectionObserver
 - Placeholder skeleton per foto non ancora renderizzate
 - Contatore "Mostrando X di Y foto" + pulsante "Carica tutte"
@@ -173,8 +198,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step B6 — Validazione dati e schema
+
 **Obiettivo:** Validazione strutturale dei dati per prevenire errori silenti e dati corrotti.
 **File coinvolti:** nuovo `js/utils/validator.js`, `js/data.js`, `js/admin/trip-editor.js`
+
 - Schema con regole (campi obbligatori, tipi, range lat/lng, formati data, lunghezze max)
 - `validateTrip(trip)` -> `{ valid: boolean, errors: string[] }`
 - Validazione all'import JSON con errori specifici
@@ -186,8 +213,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step B7 — Undo/redo nell'admin
+
 **Obiettivo:** Sistema di annullamento/ripetizione per operazioni admin.
 **File coinvolti:** nuovo `js/admin/history.js`, `js/admin/index.js`, sotto-moduli admin, `css/admin.css`
+
 - Stack history con snapshot (max 50 stati)
 - Snapshot prima di ogni operazione mutante
 - Bottoni Undo/Redo + shortcut `Ctrl+Z` / `Ctrl+Shift+Z`
@@ -199,8 +228,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step B8 — Operazioni batch nel photo organizer
+
 **Obiettivo:** Operazioni su piu' foto contemporaneamente nell'admin.
 **File coinvolti:** `js/admin/photo-organizer.js`, `css/admin.css`
+
 - Checkbox per selezione + "Seleziona tutte" / "Deseleziona tutte"
 - Azioni batch: elimina, sposta in altro viaggio, modifica caption (prefisso/suffisso)
 - Conferma modale prima di eliminazione batch
@@ -213,9 +244,11 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ## Area C — Sicurezza
 
 ### Step C1 — [DONE] Sanitizzazione URL e Content Security Policy
+
 **Obiettivo:** Validare URL immagini e aggiungere CSP.
 **File coinvolti:** `js/utils/sanitize.js`, `index.html`
-- `isValidImageUrl(url)`: accetta `https://`, relativi, `data:image/*` — rifiuta `javascript:`, `data:text/html`
+
+- `isValidImageUrl(url)`: accetta `https://`, relativi, `data:image/`* — rifiuta `javascript:`, `data:text/html`
 - Applicare ovunque si inseriscono URL (admin, import JSON)
 - Meta tag CSP in `index.html`: `default-src 'self'; img-src 'self' https: data:; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com`
 - Aggiungere `integrity` e `crossorigin` al CSS Google Fonts
@@ -227,8 +260,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step C2 — Rate limiting login e scadenza sessione
+
 **Obiettivo:** Limitare tentativi login e aggiungere scadenza sessione admin.
 **File coinvolti:** `js/auth.js`
+
 - Dopo 5 tentativi falliti, blocco 60 secondi con countdown
 - Contatore tentativi in `sessionStorage`
 - Scadenza sessione: timestamp login, verifica che non siano passate >2 ore
@@ -240,8 +275,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step C3 — Audit log operazioni admin
+
 **Obiettivo:** Registrare tutte le operazioni admin per tracciabilita'.
 **File coinvolti:** nuovo `js/admin/audit-log.js`, `js/admin/index.js`, sotto-moduli admin, `css/admin.css`
+
 - Ogni operazione genera record: `{ timestamp, action, target, details }`
 - Log in `localStorage` (chiave separata, max 500 record con rotazione FIFO)
 - Tab "Attivita'" nel pannello admin con lista cronologica
@@ -255,8 +292,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ## Area D — Deploy e Infrastruttura
 
 ### Step D1 — Build script con minificazione
+
 **Obiettivo:** Processo di build che produce versione ottimizzata per produzione.
 **File coinvolti:** `package.json`, nuovo `build.js`, nuova cartella `dist/`
+
 - Script Node.js: concatena/minifica CSS (rimuove commenti, spazi), minifica JS con `terser` (devDependency), copia `index.html` con riferimenti aggiornati, copia `assets/`
 - Output in `dist/` (aggiungere a `.gitignore`)
 - Script npm: `"build": "node build.js"`
@@ -268,8 +307,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step D2 — PWA manifest e service worker
+
 **Obiettivo:** Sito installabile come PWA e funzionante offline (almeno la shell).
 **File coinvolti:** nuovo `manifest.json`, nuovo `sw.js`, `index.html`, `js/app.js`
+
 - `manifest.json`: nome, icone (192x192 e 512x512), colori tema, `start_url`, `display: "standalone"`
 - `sw.js`: cache-first per asset statici, network-first per dati dinamici
 - Pre-cache shell (index.html, CSS, JS, font) al primo install
@@ -282,8 +323,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step D3 — GitHub Actions CI/CD
+
 **Obiettivo:** Automazione validazione codice e deploy su GitHub Pages.
 **File coinvolti:** nuovo `.github/workflows/ci.yml`, nuovo `.github/workflows/deploy.yml`, `package.json`
+
 - CI (su push/PR): lint HTML (htmlhint), CSS (stylelint), JS (eslint), build
 - Deploy (su push a `main`): build + deploy `dist/` su GitHub Pages
 - DevDependencies: `eslint`, `stylelint`, `htmlhint`
@@ -295,8 +338,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step D4 — SEO avanzato e meta tag social
+
 **Obiettivo:** Migliorare visibilita' motori di ricerca e anteprime social.
 **File coinvolti:** `index.html`, `js/app.js`, nuovi: `sitemap.xml`, `robots.txt`
+
 - `sitemap.xml` con rotte principali
 - `robots.txt` con `Allow: /` e riferimento sitemap
 - JSON-LD structured data (Schema.org `WebSite` + `ImageGallery`) iniettato dinamicamente
@@ -308,8 +353,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step D5 — Monitoraggio performance
+
 **Obiettivo:** Misurare performance del sito con Web Vitals.
 **File coinvolti:** nuovo `js/utils/performance.js`, `js/app.js`
+
 - Raccogliere Web Vitals (LCP, FID, CLS, TTFB) via `PerformanceObserver` nativa
 - Log in console (dev mode) con codice colore (verde/giallo/rosso)
 - Predisposizione per endpoint analytics (commentato)
@@ -323,8 +370,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ## Area E — Funzionalita' aggiuntive
 
 ### Step E1 — Breadcrumbs e navigazione migliorata
+
 **Obiettivo:** Aggiungere breadcrumbs per orientare l'utente.
 **File coinvolti:** `js/app.js`, `css/components.css`
+
 - Breadcrumb sotto topbar: `Home > Giappone`
 - Generazione automatica dalla rotta hash
 - Link cliccabili su ogni livello
@@ -337,8 +386,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step E2 — Viaggi correlati e suggerimenti
+
 **Obiettivo:** Suggerire viaggi correlati per tag al fondo di ogni pagina viaggio.
 **File coinvolti:** `js/gallery.js`, `css/components.css`
+
 - Sezione "Potrebbe interessarti" dopo la mappa, max 3 card
 - Correlazione: viaggi con piu' tag in comune (escluso il corrente)
 - Fallback: viaggi piu' recenti se nessuna correlazione
@@ -350,8 +401,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step E3 — Condivisione social
+
 **Obiettivo:** Bottoni share sulle pagine viaggio.
 **File coinvolti:** `js/gallery.js`, `css/components.css`
+
 - Bottoni nella hero: WhatsApp, Twitter/X, Facebook, copia link
 - API `navigator.share` su mobile come opzione primaria
 - Fallback: link diretti `https://twitter.com/intent/tweet?url=...`
@@ -363,8 +416,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step E4 — Print stylesheet
+
 **Obiettivo:** Foglio di stile per stampa leggibile e pulita.
 **File coinvolti:** nuovo `css/print.css`, `index.html`
+
 - `<link rel="stylesheet" href="css/print.css" media="print">`
 - Nascondere: navbar, footer, filtri, lightbox, mappa, bottoni, animazioni
 - Mostrare: titolo, descrizione, sezioni, galleria compatta, didascalie
@@ -376,8 +431,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step E5 — Shortcut da tastiera e guida
+
 **Obiettivo:** Scorciatoie tastiera per navigazione avanzata.
 **File coinvolti:** nuovo `js/utils/keyboard.js`, `js/app.js`, `css/components.css`
+
 - Globali: `?` guida, `/` ricerca, `h` home, `t` tema, `Esc` chiude overlay
 - In pagina viaggio: `j`/`k` scorrere sezioni, `g` galleria, `m` mappa
 - Overlay modale guida con tabella shortcut
@@ -389,8 +446,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step E6 — Preferiti/bookmarks per visitatori
+
 **Obiettivo:** Salvare viaggi preferiti e ritrovarli facilmente.
 **File coinvolti:** nuovo `js/utils/favorites.js`, `js/gallery.js`, `js/app.js`, `css/components.css`
+
 - Icona cuore su trip card e hero viaggio
 - Toggle preferito, array ID in `localStorage`
 - Animazione cuore al click (pulse + fill)
@@ -403,8 +462,10 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 ---
 
 ### Step E7 — Pagina 404 migliorata
+
 **Obiettivo:** Ridisegnare la 404 con personalita' e utilita'.
 **File coinvolti:** `js/app.js`, `css/components.css`
+
 - Illustrazione SVG animata a tema viaggio (bussola, valigia persa)
 - Messaggio spiritoso: "Sembra che ti sia perso... ma non preoccuparti, anche i migliori esploratori si perdono!"
 - Suggerimenti: link home, viaggi recenti, barra ricerca inline
@@ -420,6 +481,7 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 Le aree possono essere lavorate in parallelo, ma all'interno di ogni area gli step sono sequenziali.
 
 **Priorita' alta (fondamenta):**
+
 1. **A1** — CSS splitting (manutenibilita' per tutto il resto)
 2. **B1** — Admin splitting (stesso motivo)
 3. **B2** — Sanitizzazione XSS (sicurezza critica)
@@ -433,7 +495,7 @@ Le aree possono essere lavorate in parallelo, ma all'interno di ogni area gli st
 9. **A3-A7** — Miglioramenti grafici (in ordine)
 10. **B3-B8** — Miglioramenti architetturali (in ordine)
 
-**Priorita' normale (polish e funzionalita'):**
+**Priorita' normale (polish e funzionalita'):**  
 11. **D2, D4, D5** — PWA, SEO, analytics
 12. **C3** — Audit log
 13. **E1-E7** — Funzionalita' aggiuntive (in ordine di interesse)
