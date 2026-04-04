@@ -254,7 +254,7 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 
 ## Area D — Deploy e Infrastruttura
 
-### Step D1 — Build script con minificazione
+### Step D1 — [DONE] Build script con minificazione
 **Obiettivo:** Processo di build che produce versione ottimizzata per produzione.
 **File coinvolti:** `package.json`, nuovo `build.js`, nuova cartella `dist/`
 - Script Node.js: concatena/minifica CSS (rimuove commenti, spazi), minifica JS con `terser` (devDependency), copia `index.html` con riferimenti aggiornati, copia `assets/`
@@ -262,6 +262,8 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 - Script npm: `"build": "node build.js"`
 - File `dist/version.txt` con hash build e timestamp
 - Mantenere ES modules (non bundlare in singolo file)
+
+**Nota implementazione:** Build script puro Node.js (`build.js`) + `terser` come unica devDependency aggiunta. CSS: tutti gli `@import` risolti e concatenati in un singolo `style.min.css` minificato via regex (~22% piu' piccolo). JS: ogni modulo minificato separatamente con terser (~50 KB risparmiati), ES modules preservati. Leaflet 1.9.4 vendorato localmente (`vendor/`) via `scripts/vendor-leaflet.js` — rimosso da CDN in prod, CSP aggiornata senza `unpkg.com`. Output in `dist/` con `version.txt` (SHA-256 + timestamp).
 
 **Verifica:** `npm run build` produce `dist/` con file minificati. `dist/index.html` con server locale funziona identicamente. File CSS/JS significativamente piu' piccoli. Nessun errore in console.
 
