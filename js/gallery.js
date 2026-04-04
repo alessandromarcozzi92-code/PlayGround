@@ -267,7 +267,7 @@ const updateLightboxContent = () => {
   const caption = lightboxEl.querySelector('.lightbox__caption');
   const counter = lightboxEl.querySelector('.lightbox__counter');
 
-  image.src = photo.src;
+  image.src = sanitizeMediaUrl(photo.src);
   image.alt = photo.caption;
   caption.textContent = photo.caption;
   counter.textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;

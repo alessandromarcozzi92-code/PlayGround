@@ -210,13 +210,15 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 
 ## Area C — Sicurezza
 
-### Step C1 — Sanitizzazione URL e Content Security Policy
+### Step C1 — [DONE] Sanitizzazione URL e Content Security Policy
 **Obiettivo:** Validare URL immagini e aggiungere CSP.
 **File coinvolti:** `js/utils/sanitize.js`, `index.html`
 - `isValidImageUrl(url)`: accetta `https://`, relativi, `data:image/*` — rifiuta `javascript:`, `data:text/html`
 - Applicare ovunque si inseriscono URL (admin, import JSON)
 - Meta tag CSP in `index.html`: `default-src 'self'; img-src 'self' https: data:; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com`
 - Aggiungere `integrity` e `crossorigin` al CSS Google Fonts
+
+**Nota implementazione:** CSP aggiunta come meta tag in `index.html` con `default-src 'self'`, script limitati a self + unsafe-inline + unpkg, stili a self + unsafe-inline + Google Fonts + unpkg (Leaflet CSS), font a gstatic, connessioni a self. `unsafe-inline` necessario in `script-src` per gli handler `onerror` inline sulle immagini e in `style-src` per gli stili inline di Leaflet. `sanitizeMediaUrl` applicato anche all'assegnamento `image.src` nella lightbox (`gallery.js`). Nessun SRI per Google Fonts (CSS varia per User-Agent, il CSP limita gia' i domini). La validazione URL (`isValidMediaUrl`, `sanitizeMediaUrl`) era gia' completa da B2.
 
 **Verifica:** `javascript:alert(1)` come URL -> rifiutato. CSP attiva senza warning per risorse normali. CDN con SRI. URL `https://picsum.photos/...` accettato.
 
