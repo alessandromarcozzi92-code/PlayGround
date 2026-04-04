@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Sito web personale per raccogliere le fotografie dei viaggi",
   "scripts": {
-    "start": "lite-server"
+    "start": "lite-server",
+    "vendor": "node scripts/vendor-leaflet.js",
+    "build": "node build.js"
   },
   "repository": {
     "type": "git",
@@ -13,6 +15,7 @@
   "author": "Alessandro Marcozzi",
   "license": "ISC",
   "devDependencies": {
-    "lite-server": "^2.6.1"
+    "lite-server": "^2.6.1",
+    "terser": "^5.39.0"
   }
 }
