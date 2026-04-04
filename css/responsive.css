@@ -49,7 +49,7 @@
   }
 
   .featured-trip__image-wrapper {
-    min-height: 240px;
+    aspect-ratio: 16 / 10;
   }
 
   .moments {
@@ -58,7 +58,6 @@
 
   .moments__item {
     flex: 0 0 220px;
-    height: 160px;
   }
 
   .trips-section {
@@ -149,7 +148,7 @@
   }
 
   .featured-trip__image-wrapper {
-    min-height: 180px;
+    aspect-ratio: 16 / 10;
   }
 
   .featured-trip__name {
@@ -158,7 +157,6 @@
 
   .moments__item {
     flex: 0 0 180px;
-    height: 130px;
   }
 
   .trip-card {
@@ -166,7 +164,7 @@
   }
 
   .trip-card__image-wrapper {
-    height: 180px;
+    aspect-ratio: 16 / 10;
   }
 
   .filter-bar {
@@ -208,12 +206,11 @@
   }
 
   .featured-trip__image-wrapper {
-    min-height: 440px;
+    aspect-ratio: 16 / 10;
   }
 
   .moments__item {
     flex: 0 0 340px;
-    height: 240px;
   }
 
   .trip-card {
@@ -221,7 +218,7 @@
   }
 
   .trip-card__image-wrapper {
-    height: 260px;
+    aspect-ratio: 16 / 10;
   }
 
   .split-section {

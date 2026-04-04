@@ -1,3 +1,28 @@
+/* ===== Skeleton Loading ===== */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-secondary);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--text-primary) 8%, transparent) 50%,
+      transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 /* ===== Featured Trip (Latest) ===== */
 .featured-trip {
   max-width: var(--max-width);
@@ -23,7 +48,7 @@
 .featured-trip__image-wrapper {
   position: relative;
   flex: 1.4;
-  min-height: 380px;
+  aspect-ratio: 16 / 10;
   border-radius: var(--border-radius-lg);
   overflow: hidden;
 }
@@ -138,7 +163,7 @@
 .moments__item {
   position: relative;
   flex: 0 0 280px;
-  height: 200px;
+  aspect-ratio: 7 / 5;
   border-radius: var(--border-radius);
   overflow: hidden;
   scroll-snap-align: start;
@@ -325,7 +350,7 @@
 
   .trip-card__image-wrapper {
     position: relative;
-    height: 220px;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
   }
 

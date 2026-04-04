@@ -1,5 +1,6 @@
 import { renderMap } from './map.js';
 import { escapeHtml, escapeAttr, sanitizeMediaUrl } from './utils/sanitize.js';
+import { bindSkeletonRemoval } from './utils/skeleton.js';
 
 const MONTH_LABELS = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
 
@@ -30,9 +31,9 @@ export const renderTripCards = (container, tripsList) => {
     card.style.setProperty('--card-index', index);
     card.innerHTML = `
       <a href="#trip/${trip.id}" class="trip-card__link">
-        <div class="trip-card__image-wrapper">
+        <div class="trip-card__image-wrapper skeleton">
           <img src="${sanitizeMediaUrl(trip.cover)}" alt="${escapeAttr(trip.name)}" class="trip-card__image" loading="lazy"
-               onerror="this.style.display='none';this.parentElement.classList.add('trip-card__image-wrapper--broken')">
+               onerror="this.style.display='none';this.parentElement.classList.remove('skeleton');this.parentElement.classList.add('trip-card__image-wrapper--broken')">
           <div class="trip-card__overlay">
             <h2 class="trip-card__name">${escapeHtml(trip.name)}</h2>
             <time class="trip-card__date">${formatDate(trip.date)}</time>
@@ -46,6 +47,7 @@ export const renderTripCards = (container, tripsList) => {
         </div>
       </a>
     `;
+    bindSkeletonRemoval(card.querySelector('.trip-card__image'));
     grid.appendChild(card);
   });
 };
@@ -99,15 +101,16 @@ export const renderTripGallery = (container, trip) => {
       const el = document.createElement('section');
       el.className = `split-section split-section--${section.type}`;
 
-      const mediaHTML = section.media.type === 'video'
+      const isImage = section.media.type !== 'video';
+      const mediaHTML = !isImage
         ? `<video class="split-section__video" poster="${sanitizeMediaUrl(section.media.poster || '')}" controls preload="none" loading="lazy">
              <source src="${sanitizeMediaUrl(section.media.src)}" type="video/mp4">
            </video>`
         : `<img src="${sanitizeMediaUrl(section.media.src)}" alt="${escapeAttr(section.media.caption || section.title)}" class="split-section__image" loading="lazy"
-               onerror="this.style.display='none';this.parentElement.classList.add('split-section__media--broken')">`;
+               onerror="this.style.display='none';this.parentElement.classList.remove('skeleton');this.parentElement.classList.add('split-section__media--broken')">`;
 
       el.innerHTML = `
-        <div class="split-section__media">
+        <div class="split-section__media${isImage ? ' skeleton' : ''}">
           ${mediaHTML}
           ${section.media.caption ? `<p class="split-section__caption">${escapeHtml(section.media.caption)}</p>` : ''}
         </div>
@@ -116,6 +119,10 @@ export const renderTripGallery = (container, trip) => {
           <p class="split-section__body">${escapeHtml(section.text)}</p>
         </div>
       `;
+
+      if (isImage) {
+        bindSkeletonRemoval(el.querySelector('.split-section__image'));
+      }
 
       sectionsWrapper.appendChild(el);
     });
@@ -136,16 +143,17 @@ export const renderTripGallery = (container, trip) => {
 
   trip.photos.forEach((photo, index) => {
     const item = document.createElement('figure');
-    item.className = 'gallery-item';
+    item.className = 'gallery-item skeleton';
     item.dataset.index = index;
     item.setAttribute('tabindex', '0');
     item.setAttribute('role', 'button');
     item.setAttribute('aria-label', `Apri foto: ${escapeAttr(photo.caption)}`);
     item.innerHTML = `
       <img src="${sanitizeMediaUrl(photo.src)}" alt="${escapeAttr(photo.caption)}" class="gallery-item__image" loading="lazy"
-           onerror="this.style.display='none';this.parentElement.classList.add('gallery-item--broken')">
+           onerror="this.style.display='none';this.parentElement.classList.remove('skeleton');this.parentElement.classList.add('gallery-item--broken')">
       <figcaption class="gallery-item__caption">${escapeHtml(photo.caption)}</figcaption>
     `;
+    bindSkeletonRemoval(item.querySelector('.gallery-item__image'));
     grid.appendChild(item);
   });
 
