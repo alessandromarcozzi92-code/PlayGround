@@ -28,13 +28,15 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 
 ---
 
-### Step A2 — Aspect ratio e skeleton loading per le immagini
+### Step A2 — [DONE] Aspect ratio e skeleton loading per le immagini
 **Obiettivo:** Eliminare il CLS (Cumulative Layout Shift) riservando lo spazio delle immagini prima del caricamento, e mostrare placeholder shimmer durante il loading.
 **File coinvolti:** `css/components.css`, `js/gallery.js`, `js/app.js`
 - Aggiungere `aspect-ratio: 4/3` ai wrapper delle immagini (trip card, galleria, hero)
 - Creare classe CSS `.skeleton` con animazione shimmer (gradient animato)
 - Su `load` dell'immagine, rimuovere la classe skeleton
 - Applicare anche a moments strip e sezioni split
+
+**Nota implementazione:** Creato `js/utils/skeleton.js` con `bindSkeletonRemoval()` condiviso tra `gallery.js` e `app.js`. Classe `.skeleton` aggiunta in `components.css` con shimmer animato che rispetta dark/light theme via `color-mix()`. Aspect ratio usati: `16/10` per trip card e featured trip, `7/5` per moments, `3/2` per gallery items (gia' presente), `4/3` per split sections (gia' presente). Rimossi i valori `height`/`min-height` fissi dai wrapper immagini (anche nei breakpoint responsive), sostituiti con `aspect-ratio`. Hero slideshow e trip hero usano `background-image` su div quindi non hanno CLS e non necessitano skeleton.
 
 **Verifica:** Ricaricare con throttling "Slow 3G": gli spazi delle immagini sono gia' riservati (nessun salto del layout). Il placeholder shimmer e' visibile durante il caricamento. Lighthouse CLS score migliora.
 

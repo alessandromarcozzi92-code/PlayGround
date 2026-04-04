@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- `js/utils/skeleton.js` module with shared `bindSkeletonRemoval()` utility for skeleton loading (Step A2).
+- `.skeleton` CSS class with shimmer animation in `components.css`, theme-aware via `color-mix()` (Step A2).
+- Skeleton loading placeholders on trip cards, featured trip, moments strip, gallery items, and split section images (Step A2).
+
+### Changed
+- Replaced fixed `height`/`min-height` on image wrappers with `aspect-ratio` for CLS prevention: `16/10` on trip cards and featured trip, `7/5` on moments items (Step A2).
+- Updated responsive breakpoints in `responsive.css` to use `aspect-ratio` instead of fixed heights for image wrappers (Step A2).
+
+### Added
 - `js/utils/sanitize.js` module with `escapeHtml`, `escapeAttr`, `isValidMediaUrl`, and `sanitizeMediaUrl` utilities for XSS prevention (Step B2).
 - URL validation on JSON import in admin dashboard — rejects `javascript:`, `data:text/html`, and other dangerous URL schemes (Step B2).
 

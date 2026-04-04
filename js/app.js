@@ -9,6 +9,7 @@ import { renderSearchView } from './search.js';
 import { isAuthenticated, renderLoginForm } from './auth.js';
 import { renderAdminPanel } from './admin/index.js';
 import { escapeHtml, escapeAttr, sanitizeMediaUrl } from './utils/sanitize.js';
+import { bindSkeletonRemoval } from './utils/skeleton.js';
 
 const BASE_TITLE = 'Surprise — Travel Photography';
 
@@ -114,7 +115,7 @@ const renderLatestTrip = (container) => {
   section.innerHTML = `
     <div class="featured-trip__label">Ultimo viaggio</div>
     <div class="featured-trip__content">
-      <a href="#trip/${trip.id}" class="featured-trip__image-wrapper">
+      <a href="#trip/${trip.id}" class="featured-trip__image-wrapper skeleton">
         <img src="${sanitizeMediaUrl(trip.heroImage || trip.cover)}" alt="${escapeAttr(trip.name)}" class="featured-trip__image" loading="lazy">
         <div class="featured-trip__image-overlay"></div>
       </a>
@@ -136,6 +137,7 @@ const renderLatestTrip = (container) => {
   `;
 
   container.appendChild(section);
+  bindSkeletonRemoval(section.querySelector('.featured-trip__image'));
 };
 
 /**
@@ -162,7 +164,7 @@ const renderMomentsStrip = (container) => {
     <h2 class="moments__title">Momenti</h2>
     <div class="moments__strip">
       ${moments.map(m => `
-        <a href="#trip/${m.tripId}" class="moments__item">
+        <a href="#trip/${m.tripId}" class="moments__item skeleton">
           <img src="${sanitizeMediaUrl(m.src)}" alt="${escapeAttr(m.caption)}" class="moments__image" loading="lazy">
           <div class="moments__overlay">
             <span class="moments__trip-name" style="--dot-color: ${escapeAttr(m.tripColor)}">${escapeHtml(m.tripName)}</span>
@@ -173,6 +175,7 @@ const renderMomentsStrip = (container) => {
   `;
 
   container.appendChild(section);
+  section.querySelectorAll('.moments__image').forEach(bindSkeletonRemoval);
 };
 
 /**
