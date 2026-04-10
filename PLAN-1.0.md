@@ -283,7 +283,7 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 
 ---
 
-### Step D3 — GitHub Actions CI/CD
+### Step D3 — [DONE] GitHub Actions CI/CD
 **Obiettivo:** Automazione validazione codice e deploy su GitHub Pages.
 **File coinvolti:** nuovo `.github/workflows/ci.yml`, nuovo `.github/workflows/deploy.yml`, `package.json`
 - CI (su push/PR): lint HTML (htmlhint), CSS (stylelint), JS (eslint), build
@@ -291,6 +291,8 @@ Il sito Surprise e' completamente funzionante (v1.0): SPA vanilla JS con routing
 - DevDependencies: `eslint`, `stylelint`, `htmlhint`
 - Config linter: `.eslintrc.json`, `.stylelintrc.json`, `.htmlhintrc`
 - Script npm: `"lint"`, `"ci": "npm run lint && npm run build"`
+
+**Nota implementazione:** Aggiunte tre devDependencies (`eslint@^8.57.1`, `stylelint@^16.26.1` con `stylelint-config-standard`, `htmlhint@^1.9.2`). ESLint 8 scelta per matchare il formato `.eslintrc.json` del piano; gestisce browser ES modules (`js/`) e Node CommonJS (`build.js`, `scripts/`) via `overrides`. Stylelint config con regole rilassate per il pattern di keyframes compatti esistente. Script npm granulari: `lint:js`, `lint:css`, `lint:html` + `lint` aggregato + `ci`. Unico fix manuale: rimossa variabile dead-state `editingTripId` da `js/admin/dashboard.js`. Workflow CI fa lint + build + upload artifact; workflow deploy usa `actions/deploy-pages@v4` con environment `github-pages`, concurrency group `pages`, permessi `pages: write` + `id-token: write`.
 
 **Verifica:** Push su branch -> CI esegue lint + build. Lint fallito -> CI rossa. Merge su `main` -> deploy automatico. Sito raggiungibile su GitHub Pages.
 
