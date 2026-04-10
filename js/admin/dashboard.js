@@ -8,9 +8,6 @@ import { trips, saveTrips, defaultTrips } from '../data.js';
 import { escAttr, nameToId, svg, showToast, getAllTags } from './helpers.js';
 import { isValidMediaUrl } from '../utils/sanitize.js';
 
-/** Currently edited trip id (null = new trip form) */
-let editingTripId = null;
-
 /* ─── Trip row ─── */
 
 /**
@@ -59,7 +56,6 @@ const renderTripRow = (trip) => {
  * @param {Function}    renderPanel  - Function to re-render the entire admin panel.
  */
 const showEditor = (tabEl, tripId, onDataChange, rootContainer, renderPanel) => {
-  editingTripId = tripId;
   const trip = tripId ? trips.find(t => t.id === tripId) : null;
   const editorEl = tabEl.querySelector('#admin-editor');
   const isNew = !trip;
@@ -121,7 +117,7 @@ const showEditor = (tabEl, tripId, onDataChange, rootContainer, renderPanel) => 
 
   editorEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-  const closeEditor = () => { editorEl.hidden = true; editorEl.innerHTML = ''; editingTripId = null; };
+  const closeEditor = () => { editorEl.hidden = true; editorEl.innerHTML = ''; };
   editorEl.querySelector('.admin-editor__close').addEventListener('click', closeEditor);
   editorEl.querySelector('.admin-editor__cancel').addEventListener('click', closeEditor);
 

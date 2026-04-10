@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- ESLint, Stylelint, and HTMLHint configurations (`.eslintrc.json`, `.stylelintrc.json`, `.htmlhintrc`) for automated code quality checks (Step D3).
+- npm scripts `lint:js`, `lint:css`, `lint:html`, `lint` (aggregate), and `ci` (lint + build) (Step D3).
+- GitHub Actions CI workflow (`.github/workflows/ci.yml`) running lint + build on push and pull requests to `main`, uploading `dist/` as artifact (Step D3).
+- GitHub Actions deploy workflow (`.github/workflows/deploy.yml`) publishing `dist/` to GitHub Pages on push to `main` via `actions/deploy-pages@v4` (Step D3).
 - `js/utils/skeleton.js` module with shared `bindSkeletonRemoval()` utility for skeleton loading (Step A2).
 - `.skeleton` CSS class with shimmer animation in `components.css`, theme-aware via `color-mix()` (Step A2).
 - Skeleton loading placeholders on trip cards, featured trip, moments strip, gallery items, and split section images (Step A2).
 
 ### Changed
+- Removed dead-state variable `editingTripId` from `js/admin/dashboard.js` (flagged by ESLint as unused) (Step D3).
+- Normalized hex colors `#ffffff` -> `#fff` in `css/tokens.css` for Stylelint consistency (Step D3).
 - Replaced fixed `height`/`min-height` on image wrappers with `aspect-ratio` for CLS prevention: `16/10` on trip cards and featured trip, `7/5` on moments items (Step A2).
 - Updated responsive breakpoints in `responsive.css` to use `aspect-ratio` instead of fixed heights for image wrappers (Step A2).
 

@@ -2,10 +2,10 @@
 [data-theme="light"],
 :root {
   --bg-primary: #f5f3f0;
-  --bg-secondary: #ffffff;
+  --bg-secondary: #fff;
   --text-primary: #1a1a2e;
   --text-secondary: #6b6b7b;
-  --surface: #ffffff;
+  --surface: #fff;
   --shadow: rgba(0, 0, 0, 0.08);
   --shadow-strong: rgba(0, 0, 0, 0.15);
   --border: rgba(0, 0, 0, 0.06);
